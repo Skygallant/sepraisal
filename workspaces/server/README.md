@@ -11,59 +11,61 @@ There are two ways to "save" the database:
 - backup: several MBs of JSON, that contains 130k+ IDs only because Steam won't let to discover beyond 70k items. The rest can be regenerated.
 
 
-## Setup
+## Setup on Debian 13
 
 ```sh
 ## Install git
-# TODO
-git --version  # 2.25.1
-
-## Install Node v12
-# TODO
-node --version  # v12.19.0
-
-## Install Yarn
-# TODO
-yarn --version  # 1.22.5
-
-## Install MongoDB - https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/
-wget -qO - https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
-echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
 sudo apt-get update
+sudo apt-get install -y git
+git --version
+
+## Install Node.js and Corepack.
+## Debian 13 ships a modern Node.js; install it system-wide so systemd can see it.
+sudo apt-get install -y nodejs npm
+node --version
+
+## Enable Yarn via Corepack (preferred on Debian 13).
+sudo corepack enable
+yarn --version
+
+## Install MongoDB using the current Debian repository instructions from MongoDB.
+## The old Ubuntu focal / apt-key commands are obsolete on Debian 13.
 sudo apt-get install -y mongodb-org
-mongod --version  # v4.4.3
-mongo --version  # v4.4.3
+mongod --version
 
 ## Start MongoDB
 sudo systemctl daemon-reload
-sudo service mongod start
-sudo service mongod status
-sudo service mongod enable
+sudo systemctl enable --now mongod
+sudo systemctl status mongod
 
 
 
 ## Init repo
-git clone https://github.com/Akuukis/sepraisal.git
-cd ~/sepraisal
-yarn
-yarn build
+sudo useradd --system --create-home --home-dir /srv/sepraisal --shell /usr/sbin/nologin sepraisal
+sudo -u sepraisal git clone https://github.com/Akuukis/sepraisal.git /srv/sepraisal
+cd /srv/sepraisal
+sudo -u sepraisal yarn install
+sudo -u sepraisal yarn build
 
 
 ## Index the database
-cd ~/sepraisal/workspaces/server
-cp .env.exaxmple .env
-yarn reindex
+cd /srv/sepraisal/workspaces/server
+sudo -u sepraisal cp .env.example .env
+sudo -u sepraisal yarn reindex
 
 ## Test server
-cd ~/sepraisal/workspaces/server
-yarn start
+cd /srv/sepraisal/workspaces/server
+sudo -u sepraisal yarn start
 
 ## Create service for server
-cd ~/sepraisal/workspaces/server
-chmod +x utils/start.sh
-sudo cp utils/sepraisal.service /etc/systemd/system
-sudo service sepraisal start
-sudo service sepraisal status
-# if doesn't work, try `sudo journalctl -xe` or `cat err.log`.
-sudo service sepraisal enable
+cd /srv/sepraisal/workspaces/server
+sudo -u sepraisal chmod +x utils/start.sh
+sudo install -m 0644 sepraisal.service /etc/systemd/system/sepraisal.service
+sudo install -d /etc/default
+# change /srv/sepraisal here if you deploy the repo somewhere else
+printf "SEPRAISAL_ROOT=/srv/sepraisal\n" | sudo tee /etc/default/sepraisal
+sudo systemctl daemon-reload
+sudo systemctl enable --now sepraisal
+sudo systemctl status sepraisal
+# if it doesn't work, use `sudo journalctl -u sepraisal -f`.
 ```

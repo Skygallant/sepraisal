@@ -300,6 +300,7 @@
             <PlaceDecals>false</PlaceDecals>
             <BlockTopology>TriangleMesh</BlockTopology>
             <Size x="5" y="5" z="5" />
+            <Center x="2" y="0" z="2" />
             <ModelOffset x="0" y="0" z="0" />
             <Model>Models\Cubes\Small\GatlingTurret.mwm</Model>
             <UseModelIntersection>true</UseModelIntersection>
@@ -346,7 +347,7 @@
             <OverlayTexture>Textures\GUI\Screens\turret_overlay.dds</OverlayTexture>
             <WeaponDefinitionId Subtype="SmallGatlingTurret" />
             <HiddenTargetingOptions>Friends</HiddenTargetingOptions>
-            <InventoryMaxVolume>0.084</InventoryMaxVolume>
+            <InventoryMaxVolume>0.08</InventoryMaxVolume>
             <DamageEffectName>Damage_WeapExpl_Damaged</DamageEffectName>
             <DamagedSound>ParticleWeapExpl</DamagedSound>
             <ResourceSinkGroup>Defense</ResourceSinkGroup>
@@ -479,6 +480,7 @@
             <PlaceDecals>false</PlaceDecals>
             <BlockTopology>TriangleMesh</BlockTopology>
             <Size x="5" y="5" z="5" />
+            <Center x="2" y="0" z="2" />
             <ModelOffset x="0" y="0" z="0" />
             <Model>Models\Cubes\Small\MissileTurret.mwm</Model>
             <UseModelIntersection>true</UseModelIntersection>

@@ -893,6 +893,9 @@
 				<Class>EliteConsumables</Class>				
                 <Class>BuildPlanner</Class>
             </BlueprintClasses>
+            <IgnoredBlueprintClassesIcons>
+                <IgnoredClassIcon>BuildPlanner</IgnoredClassIcon>
+            </IgnoredBlueprintClassesIcons>
             <DamageEffectName>Damage_HeavyMech_Damaged</DamageEffectName>
             <DamagedSound>ParticleHeavyMech</DamagedSound>
             <PrimarySound>BlockAssembler</PrimarySound>
@@ -908,6 +911,7 @@
                 <unsignedInt>240</unsignedInt>
             </TieredUpdateTimes>
             <DLC>HeavyIndustry</DLC>
+            <AllowSelfPulling>true</AllowSelfPulling>
         </Definition>
 
         <Definition xsi:type="MyObjectBuilder_RefineryDefinition">
@@ -1002,6 +1006,7 @@
                 <unsignedInt>240</unsignedInt>
             </TieredUpdateTimes>
             <DLC>HeavyIndustry</DLC>
+            <AllowSelfPulling>false</AllowSelfPulling>
         </Definition>
 
         <Definition>

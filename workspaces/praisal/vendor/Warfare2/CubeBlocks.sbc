@@ -758,6 +758,7 @@
             <DestroySound>PoofExplosionCat3</DestroySound>
             <PCU>115</PCU>
             <DLC>Warfare2</DLC>
+            <DepressurizationEffectOffset x="0" y="-5" z ="0" />
         </Definition>
 
         <Definition xsi:type="MyObjectBuilder_AirtightHangarDoorDefinition">
@@ -817,6 +818,7 @@
             <DestroySound>PoofExplosionCat3</DestroySound>
             <PCU>115</PCU>
             <DLC>Warfare2</DLC>
+            <DepressurizationEffectOffset x="0" y="-5" z ="0" />
         </Definition>
 
         <Definition xsi:type="MyObjectBuilder_AirtightHangarDoorDefinition">
@@ -876,6 +878,7 @@
             <DestroySound>PoofExplosionCat3</DestroySound>
             <PCU>115</PCU>
             <DLC>Warfare2</DLC>
+            <DepressurizationEffectOffset x="0" y="-5" z ="0" />
         </Definition>
 
         <Definition xsi:type="MyObjectBuilder_WeaponBlockDefinition">
@@ -1184,8 +1187,9 @@
             <DestroyEffect>BlockDestroyed_Large</DestroyEffect>
             <DestroySound>PoofExplosionCat3</DestroySound>
             <PCU>115</PCU>
-            <DepressurizationEffectOffset x="0" y="1.25" z ="0" />
+            <DepressurizationEffectOffset x="1.125" y="0.5625" z ="0" />
             <DLC>Warfare2</DLC>
+            <PressurizeCube>true</PressurizeCube>
         </Definition>
 
         <Definition xsi:type="MyObjectBuilder_DoorDefinition">
@@ -1251,8 +1255,9 @@
             <DestroyEffect>BlockDestroyed_Large</DestroyEffect>
             <DestroySound>PoofExplosionCat3</DestroySound>
             <PCU>115</PCU>
-            <DepressurizationEffectOffset x="0" y="1.25" z ="0" />
+            <DepressurizationEffectOffset x="1.25" y="0.5625" z ="0" />
             <DLC>Warfare2</DLC>
+            <PressurizeCube>true</PressurizeCube>
         </Definition>
 
         <Definition xsi:type="MyObjectBuilder_SearchlightDefinition">
@@ -1519,7 +1524,7 @@
                 <SubtypeId>SmallHeatVentBlock</SubtypeId>
             </Id>
             <DisplayName>DisplayName_Block_HeatVentWarfare2</DisplayName>
-            <Icon>Textures\GUI\Icons\Cubes\HeatVent_small.dds</Icon>
+            <Icon>Textures\GUI\Icons\Cubes\HeatVent.dds</Icon>
             <Description>Description_HeatVent</Description>
             <CubeSize>Small</CubeSize>
             <BlockTopology>TriangleMesh</BlockTopology>
@@ -1585,6 +1590,9 @@
                 <TypeId>Cockpit</TypeId>
                 <SubtypeId>SmallBlockStandingCockpit</SubtypeId>
             </Id>
+            <YesNoToolbarBackground>true</YesNoToolbarBackground>
+            <YesNoToolbarYesTooltip>YesNoToolbarTooltip_Cockpit_Yes</YesNoToolbarYesTooltip>
+            <YesNoToolbarNoTooltip>YesNoToolbarTooltip_Cockpit_No</YesNoToolbarNoTooltip>
             <DisplayName>DisplayName_Block_CockpitStandingBridge</DisplayName>
             <Icon>Textures\GUI\Icons\Cubes\StandingBridge.dds</Icon>
             <Description>Description_CockpitStandingBridge</Description>
@@ -1658,6 +1666,9 @@
                 <TypeId>Cockpit</TypeId>
                 <SubtypeId>LargeBlockStandingCockpit</SubtypeId>
             </Id>
+            <YesNoToolbarBackground>true</YesNoToolbarBackground>
+            <YesNoToolbarYesTooltip>YesNoToolbarTooltip_Cockpit_Yes</YesNoToolbarYesTooltip>
+            <YesNoToolbarNoTooltip>YesNoToolbarTooltip_Cockpit_No</YesNoToolbarNoTooltip>
             <DisplayName>DisplayName_Block_CockpitStandingBridge</DisplayName>
             <Icon>Textures\GUI\Icons\Cubes\StandingBridge.dds</Icon>
             <Description>Description_CockpitStandingBridge</Description>

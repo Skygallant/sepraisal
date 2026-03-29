@@ -161,6 +161,9 @@
                 <SubtypeId>SmallBlockSensor</SubtypeId>
             </Id>
             <DisplayName>DisplayName_Block_Sensor</DisplayName>
+            <YesNoToolbarBackground>true</YesNoToolbarBackground>
+            <YesNoToolbarYesTooltip>YesNoToolbarTooltip_SensorBlock_Yes</YesNoToolbarYesTooltip>
+            <YesNoToolbarNoTooltip>YesNoToolbarTooltip_SensorBlock_No</YesNoToolbarNoTooltip>
             <Icon>Textures\GUI\Icons\Cubes\Sensor.dds</Icon>
             <Description>Description_Sensor</Description>
             <CubeSize>Small</CubeSize>
@@ -173,7 +176,7 @@
                 <Component Subtype="InteriorPlate" Count="5" />
                 <Component Subtype="Construction" Count="5" />
                 <Component Subtype="Computer" Count="6" />
-                <Component Subtype="RadioCommunication" Count="4" />
+                <Component Subtype="RadioCommunication" Count="1" />
                 <Component Subtype="Detector" Count="6" />
                 <Component Subtype="SteelPlate" Count="2" />
             </Components>
@@ -222,6 +225,9 @@
                 <SubtypeId>LargeBlockSensor</SubtypeId>
             </Id>
             <DisplayName>DisplayName_Block_Sensor</DisplayName>
+            <YesNoToolbarBackground>true</YesNoToolbarBackground>
+            <YesNoToolbarYesTooltip>YesNoToolbarTooltip_SensorBlock_Yes</YesNoToolbarYesTooltip>
+            <YesNoToolbarNoTooltip>YesNoToolbarTooltip_SensorBlock_No</YesNoToolbarNoTooltip>
             <Icon>Textures\GUI\Icons\Cubes\Sensor.dds</Icon>
             <Description>Description_Sensor</Description>
             <CubeSize>Large</CubeSize>
@@ -234,7 +240,7 @@
                 <Component Subtype="InteriorPlate" Count="5" />
                 <Component Subtype="Construction" Count="5" />
                 <Component Subtype="Computer" Count="6" />
-                <Component Subtype="RadioCommunication" Count="4" />
+                <Component Subtype="RadioCommunication" Count="1" />
                 <Component Subtype="Detector" Count="6" />
                 <Component Subtype="SteelPlate" Count="2" />
             </Components>
@@ -898,6 +904,9 @@
             </Id>
             <Public>true</Public>
             <DisplayName>DisplayName_TurretControlBlock</DisplayName>
+            <YesNoToolbarBackground>true</YesNoToolbarBackground>
+            <YesNoToolbarYesTooltip>YesNoToolbarTooltip_TurretCtrl_Yes</YesNoToolbarYesTooltip>
+            <YesNoToolbarNoTooltip>YesNoToolbarTooltip_TurretCtrl_No</YesNoToolbarNoTooltip>
             <Icon>Textures\GUI\Icons\Cubes\TurretControlBlockLarge.dds</Icon>
             <Description>Description_TurretControlBlock</Description>
             <CubeSize>Large</CubeSize>
@@ -950,7 +959,6 @@
             <DestroyEffect>BlockDestroyedExplosion_Tiny</DestroyEffect>
             <DestroySound>WepSmallWarheadExpl</DestroySound>
             <PlayerInputDivider>50</PlayerInputDivider>
-            <ResourceSinkGroup>Utility</ResourceSinkGroup>
             <PowerInputIdle>0.0005</PowerInputIdle>
             <PCU>100</PCU>
             <MaxRangeMeters>800</MaxRangeMeters>
@@ -974,6 +982,9 @@
             </Id>
             <Public>true</Public>
             <DisplayName>DisplayName_TurretControlBlock</DisplayName>
+            <YesNoToolbarBackground>true</YesNoToolbarBackground>
+            <YesNoToolbarYesTooltip>YesNoToolbarTooltip_TurretCtrl_Yes</YesNoToolbarYesTooltip>
+            <YesNoToolbarNoTooltip>YesNoToolbarTooltip_TurretCtrl_No</YesNoToolbarNoTooltip>
             <Icon>Textures\GUI\Icons\Cubes\TurretControlBlockSmall.dds</Icon>
             <Description>Description_TurretControlBlock</Description>
             <CubeSize>Small</CubeSize>
@@ -1019,7 +1030,6 @@
             <DestroyEffect>BlockDestroyedExplosion_Tiny</DestroyEffect>
             <DestroySound>WepSmallWarheadExpl</DestroySound>
             <PlayerInputDivider>50</PlayerInputDivider>
-            <ResourceSinkGroup>Utility</ResourceSinkGroup>
             <PowerInputIdle>0.0005</PowerInputIdle>
             <PCU>100</PCU>
             <MaxRangeMeters>600</MaxRangeMeters>
@@ -1043,6 +1053,7 @@
             <Description>Description_EventController</Description>
             <Icon>Textures\GUI\Icons\Cubes\EventController_large.dds</Icon>
             <CubeSize>Large</CubeSize>
+            <YesNoToolbarBackground>true</YesNoToolbarBackground>
             <BlockTopology>TriangleMesh</BlockTopology>
             <Size x="1" y="1" z="1" />
             <ModelOffset x="0" y="0" z="0" />
@@ -1084,6 +1095,7 @@
             <DisplayName>DisplayName_Block_EventController</DisplayName>
             <Description>Description_EventController</Description>
             <Icon>Textures\GUI\Icons\Cubes\EventController_small.dds</Icon>
+            <YesNoToolbarBackground>true</YesNoToolbarBackground>
             <CubeSize>Small</CubeSize>
             <BlockTopology>TriangleMesh</BlockTopology>
             <Size x="1" y="1" z="1" />
@@ -1451,6 +1463,9 @@
             </Id>
             <DisplayName>DisplayName_Block_DefensiveCombatBlock</DisplayName>
             <Icon>Textures\GUI\Icons\Cubes\DefensiveBlock_Combat.dds</Icon>
+            <YesNoToolbarBackground>true</YesNoToolbarBackground>
+            <YesNoToolbarYesTooltip>YesNoToolbarTooltip_AIDefence_Yes</YesNoToolbarYesTooltip>
+            <YesNoToolbarNoTooltip>YesNoToolbarTooltip_AIDefence_No</YesNoToolbarNoTooltip>
             <Description>Description_DefensiveCombatBlock</Description>
             <CubeSize>Large</CubeSize>
             <BlockTopology>TriangleMesh</BlockTopology>
@@ -1516,6 +1531,9 @@
             </Id>
             <DisplayName>DisplayName_Block_DefensiveCombatBlock</DisplayName>
             <Icon>Textures\GUI\Icons\Cubes\DefensiveBlock_Combat.dds</Icon>
+            <YesNoToolbarBackground>true</YesNoToolbarBackground>
+            <YesNoToolbarYesTooltip>YesNoToolbarTooltip_AIDefence_Yes</YesNoToolbarYesTooltip>
+            <YesNoToolbarNoTooltip>YesNoToolbarTooltip_AIDefence_No</YesNoToolbarNoTooltip>
             <Description>Description_DefensiveCombatBlock</Description>
             <CubeSize>Small</CubeSize>
             <BlockTopology>TriangleMesh</BlockTopology>
@@ -1619,6 +1637,9 @@
             <DamagedSound>ParticleElectrical</DamagedSound>
             <PCU>25</PCU>
             <EmissiveColorPreset>Extended</EmissiveColorPreset>
+            <YesNoToolbarBackground>true</YesNoToolbarBackground>
+            <YesNoToolbarYesTooltip>YesNoToolbarTooltip_AIOffense_Yes</YesNoToolbarYesTooltip>
+            <YesNoToolbarNoTooltip>YesNoToolbarTooltip_AIOffense_No</YesNoToolbarNoTooltip>
         </Definition>
 
         <Definition xsi:type="MyObjectBuilder_OffensiveCombatBlockDefinition">
@@ -1666,6 +1687,9 @@
             <DamagedSound>ParticleElectrical</DamagedSound>
             <PCU>25</PCU>
             <EmissiveColorPreset>Extended</EmissiveColorPreset>
+            <YesNoToolbarBackground>true</YesNoToolbarBackground>
+            <YesNoToolbarYesTooltip>YesNoToolbarTooltip_AIOffense_Yes</YesNoToolbarYesTooltip>
+            <YesNoToolbarNoTooltip>YesNoToolbarTooltip_AIOffense_No</YesNoToolbarNoTooltip>
         </Definition>
 
         <!-- END AI Blocks -->

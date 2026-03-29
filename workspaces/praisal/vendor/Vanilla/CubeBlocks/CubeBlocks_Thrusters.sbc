@@ -568,6 +568,7 @@
             </VoxelPlacement>
             <BlockPairName>HydrogenThrust</BlockPairName>
             <Center x="0" y="0" z="0" />
+            <MirroringY>Z</MirroringY>
             <MirroringZ>Y</MirroringZ>
             <EdgeType>Light</EdgeType>
             <BuildTimeSeconds>40</BuildTimeSeconds>
@@ -774,6 +775,7 @@
             </VoxelPlacement>
             <BlockPairName>HydrogenThrust</BlockPairName>
             <Center x="0" y="0" z="0" />
+            <MirroringY>Z</MirroringY>
             <MirroringZ>Y</MirroringZ>
             <EdgeType>Light</EdgeType>
             <BuildTimeSeconds>10</BuildTimeSeconds>

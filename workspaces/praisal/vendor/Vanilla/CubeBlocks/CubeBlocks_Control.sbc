@@ -173,6 +173,9 @@
                 <SubtypeId>LargeBlockCockpit</SubtypeId>
                 <!-- Station control seat -->
             </Id>
+            <YesNoToolbarBackground>true</YesNoToolbarBackground>
+            <YesNoToolbarYesTooltip>YesNoToolbarTooltip_Cockpit_Yes</YesNoToolbarYesTooltip>
+            <YesNoToolbarNoTooltip>YesNoToolbarTooltip_Cockpit_No</YesNoToolbarNoTooltip>
             <DisplayName>DisplayName_Block_Cockpit2</DisplayName>
             <Icon>Textures\GUI\Icons\Cubes\Cockpit.dds</Icon>
             <Description>Description_ControlStation</Description>
@@ -248,6 +251,9 @@
                 <SubtypeId>LargeBlockCockpitSeat</SubtypeId>
                 <!-- Large block cockpit -->
             </Id>
+            <YesNoToolbarBackground>true</YesNoToolbarBackground>
+            <YesNoToolbarYesTooltip>YesNoToolbarTooltip_Cockpit_Yes</YesNoToolbarYesTooltip>
+            <YesNoToolbarNoTooltip>YesNoToolbarTooltip_Cockpit_No</YesNoToolbarNoTooltip>
             <DisplayName>DisplayName_Block_Cockpit1</DisplayName>
             <Icon>Textures\GUI\Icons\Cubes\CockpitSmall.dds</Icon>
             <Description>Description_Cockpit</Description>
@@ -333,6 +339,9 @@
                 <SubtypeId>SmallBlockCockpit</SubtypeId>
                 <!-- Small block cockpit -->
             </Id>
+            <YesNoToolbarBackground>true</YesNoToolbarBackground>
+            <YesNoToolbarYesTooltip>YesNoToolbarTooltip_Cockpit_Yes</YesNoToolbarYesTooltip>
+            <YesNoToolbarNoTooltip>YesNoToolbarTooltip_Cockpit_No</YesNoToolbarNoTooltip>
             <DisplayName>DisplayName_Block_Cockpit1</DisplayName>
             <Icon>Textures\GUI\Icons\Cubes\CockpitSmall.dds</Icon>
             <Description>Description_Cockpit</Description>
@@ -421,6 +430,9 @@
             <DisplayName>DisplayName_Block_FighterCockpit</DisplayName>
             <Icon>Textures\GUI\Icons\Cubes\FighterCockpit.dds</Icon>
             <Description>Description_FighterCockpit</Description>
+            <YesNoToolbarBackground>true</YesNoToolbarBackground>
+            <YesNoToolbarYesTooltip>YesNoToolbarTooltip_Cockpit_Yes</YesNoToolbarYesTooltip>
+            <YesNoToolbarNoTooltip>YesNoToolbarTooltip_Cockpit_No</YesNoToolbarNoTooltip>
             <CubeSize>Small</CubeSize>
             <GuiVisible>false</GuiVisible>
             <BlockTopology>TriangleMesh</BlockTopology>
@@ -513,6 +525,9 @@
                 <SubtypeId>CockpitOpen</SubtypeId>
                 <!-- Flight seat -->
             </Id>
+            <YesNoToolbarBackground>true</YesNoToolbarBackground>
+            <YesNoToolbarYesTooltip>YesNoToolbarTooltip_Cockpit_Yes</YesNoToolbarYesTooltip>
+            <YesNoToolbarNoTooltip>YesNoToolbarTooltip_Cockpit_No</YesNoToolbarNoTooltip>
             <DisplayName>DisplayName_Block_Cockpit3</DisplayName>
             <Icon>Textures\GUI\Icons\Cubes\CockpitOpen.dds</Icon>
             <Description>Description_FlightSeat</Description>
@@ -585,6 +600,9 @@
                 <TypeId>Cockpit</TypeId>
                 <SubtypeId>RoverCockpit</SubtypeId>
             </Id>
+            <YesNoToolbarBackground>true</YesNoToolbarBackground>
+            <YesNoToolbarYesTooltip>YesNoToolbarTooltip_Cockpit_Yes</YesNoToolbarYesTooltip>
+            <YesNoToolbarNoTooltip>YesNoToolbarTooltip_Cockpit_No</YesNoToolbarNoTooltip>
             <DisplayName>DisplayName_Block_RoverCockpit</DisplayName>
             <Icon>Textures\GUI\Icons\Cubes\RoverCockpit.dds</Icon>
             <Description>Description_RoverCockpit</Description>
@@ -775,6 +793,9 @@
                 <TypeId>Cockpit</TypeId>
                 <SubtypeId>OpenCockpitSmall</SubtypeId>
             </Id>
+            <YesNoToolbarBackground>true</YesNoToolbarBackground>
+            <YesNoToolbarYesTooltip>YesNoToolbarTooltip_Cockpit_Yes</YesNoToolbarYesTooltip>
+            <YesNoToolbarNoTooltip>YesNoToolbarTooltip_Cockpit_No</YesNoToolbarNoTooltip>
             <DisplayName>DisplayName_Block_OpenCockpitSmall</DisplayName>
             <Icon>Textures\GUI\Icons\Cubes\OpenCockpitSmall.dds</Icon>
             <Description>Description_OpenCockpitSmall</Description>
@@ -839,6 +860,9 @@
                 <TypeId>Cockpit</TypeId>
                 <SubtypeId>OpenCockpitLarge</SubtypeId>
             </Id>
+            <YesNoToolbarBackground>true</YesNoToolbarBackground>
+            <YesNoToolbarYesTooltip>YesNoToolbarTooltip_Cockpit_Yes</YesNoToolbarYesTooltip>
+            <YesNoToolbarNoTooltip>YesNoToolbarTooltip_Cockpit_No</YesNoToolbarNoTooltip>
             <DisplayName>DisplayName_Block_OpenCockpitLarge</DisplayName>
             <Icon>Textures\GUI\Icons\Cubes\OpenCockpitLarge.dds</Icon>
             <Description>Description_OpenCockpitLarge</Description>
@@ -907,6 +931,9 @@
                 <TypeId>Cockpit</TypeId>
                 <SubtypeId>SmallBlockFlushCockpit</SubtypeId>
             </Id>
+            <YesNoToolbarBackground>true</YesNoToolbarBackground>
+            <YesNoToolbarYesTooltip>YesNoToolbarTooltip_Cockpit_Yes</YesNoToolbarYesTooltip>
+            <YesNoToolbarNoTooltip>YesNoToolbarTooltip_Cockpit_No</YesNoToolbarNoTooltip>
             <DisplayName>DisplayName_Block_CockpitFlush</DisplayName>
             <Icon>Textures\GUI\Icons\Cubes\CockpitFlush.dds</Icon>
             <Description>Description_Cockpit</Description>

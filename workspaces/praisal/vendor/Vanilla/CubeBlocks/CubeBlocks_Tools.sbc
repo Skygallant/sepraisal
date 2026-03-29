@@ -177,7 +177,7 @@
                 <Component Subtype="Construction" Count="5" />
                 <Component Subtype="SteelPlate" Count="5" />
             </Components>
-            <CriticalComponent Subtype="Motor" Index="0" />
+            <CriticalComponent Subtype="Computer" Index="0" />
             <BuildProgressModels>
                 <Model BuildPercentUpperBound="0.33" File="Models\Cubes\Large\GrinderConstruction_1.mwm" />
                 <Model BuildPercentUpperBound="0.66" File="Models\Cubes\Large\GrinderConstruction_2.mwm" />
@@ -241,7 +241,7 @@
                 <Component Subtype="Construction" Count="2" />
                 <Component Subtype="SteelPlate" Count="2" />
             </Components>
-            <CriticalComponent Subtype="Motor" Index="0" />
+            <CriticalComponent Subtype="Computer" Index="0" />
             <BuildProgressModels>
                 <Model BuildPercentUpperBound="0.5" File="Models\Cubes\Small\GrinderConstruction_1.mwm" />
                 <Model BuildPercentUpperBound="1.0" File="Models\Cubes\Small\GrinderConstruction_2.mwm" />
@@ -309,7 +309,7 @@
                 <Component Subtype="Construction" Count="5" />
                 <Component Subtype="SteelPlate" Count="5" />
             </Components>
-            <CriticalComponent Subtype="Motor" Index="0" />
+            <CriticalComponent Subtype="Computer" Index="0" />
             <BuildProgressModels>
                 <Model BuildPercentUpperBound="0.33" File="Models\Cubes\Large\WelderConstruction_1.mwm" />
                 <Model BuildPercentUpperBound="0.66" File="Models\Cubes\Large\WelderConstruction_2.mwm" />
@@ -375,7 +375,7 @@
                 <Component Subtype="Construction" Count="2" />
                 <Component Subtype="SteelPlate" Count="2" />
             </Components>
-            <CriticalComponent Subtype="Motor" Index="0" />
+            <CriticalComponent Subtype="Computer" Index="0" />
             <BuildProgressModels>
                 <Model BuildPercentUpperBound="0.5" File="Models\Cubes\Small\WelderConstruction_1.mwm" />
                 <Model BuildPercentUpperBound="1.0" File="Models\Cubes\Small\WelderConstruction_2.mwm" />

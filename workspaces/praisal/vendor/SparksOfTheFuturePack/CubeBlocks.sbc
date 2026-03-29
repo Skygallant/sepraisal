@@ -18,7 +18,7 @@
             <Components>
                 <Component Subtype="InteriorPlate" Count="25" />
                 <Component Subtype="Construction" Count="150" />
-                <Component Subtype="Computer" Count="25" />scifi
+                <Component Subtype="Computer" Count="25" />
                 <Component Subtype="Display" Count="250" />
                 <Component Subtype="BulletproofGlass" Count="150" />
             </Components>

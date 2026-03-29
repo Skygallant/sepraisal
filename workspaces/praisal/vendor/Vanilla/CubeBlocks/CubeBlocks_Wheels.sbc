@@ -1371,7 +1371,7 @@
                 </DynamicMode>
             </VoxelPlacement>
             <WheelPlacementCollider>
-                <ColliderDiameter>1</ColliderDiameter>
+                <ColliderDiameter>0.8</ColliderDiameter>
                 <ColliderHeight>0.9</ColliderHeight>
                 <ColliderOffset>0.08</ColliderOffset>
             </WheelPlacementCollider>
@@ -1505,7 +1505,7 @@
                 </DynamicMode>
             </VoxelPlacement>
             <WheelPlacementCollider>
-                <ColliderDiameter>1</ColliderDiameter>
+                <ColliderDiameter>0.9</ColliderDiameter>
                 <ColliderHeight>1.25</ColliderHeight>
                 <ColliderOffset>0.22</ColliderOffset>
             </WheelPlacementCollider>
@@ -1643,7 +1643,7 @@
             <MountPoints>
             </MountPoints>
             <WheelPlacementCollider>
-                <ColliderDiameter>1</ColliderDiameter>
+                <ColliderDiameter>0.9</ColliderDiameter>
                 <ColliderHeight>0.9</ColliderHeight>
                 <ColliderOffset>0.08</ColliderOffset>
             </WheelPlacementCollider>
@@ -1712,7 +1712,7 @@
             <MountPoints>
             </MountPoints>
             <WheelPlacementCollider>
-                <ColliderDiameter>1</ColliderDiameter>
+                <ColliderDiameter>0.9</ColliderDiameter>
                 <ColliderHeight>0.88</ColliderHeight>
                 <ColliderOffset>0.28</ColliderOffset>
             </WheelPlacementCollider>
@@ -1780,7 +1780,7 @@
             <MountPoints>
             </MountPoints>
             <WheelPlacementCollider>
-                <ColliderDiameter>1</ColliderDiameter>
+                <ColliderDiameter>0.9</ColliderDiameter>
                 <ColliderHeight>0.62</ColliderHeight>
                 <ColliderOffset>0.36</ColliderOffset>
             </WheelPlacementCollider>
@@ -1849,7 +1849,7 @@
             <MountPoints>
             </MountPoints>
             <WheelPlacementCollider>
-                <ColliderDiameter>0.95</ColliderDiameter>
+                <ColliderDiameter>0.9</ColliderDiameter>
                 <ColliderHeight>0.9</ColliderHeight>
                 <ColliderOffset>0.15</ColliderOffset>
             </WheelPlacementCollider>
@@ -1903,7 +1903,7 @@
             <MountPoints>
             </MountPoints>
             <WheelPlacementCollider>
-                <ColliderDiameter>1</ColliderDiameter>
+                <ColliderDiameter>0.8</ColliderDiameter>
                 <ColliderHeight>0.9</ColliderHeight>
                 <ColliderOffset>0.08</ColliderOffset>
             </WheelPlacementCollider>
@@ -2051,7 +2051,7 @@
             <MountPoints>
             </MountPoints>
             <WheelPlacementCollider>
-                <ColliderDiameter>1</ColliderDiameter>
+                <ColliderDiameter>0.9</ColliderDiameter>
                 <ColliderHeight>1.25</ColliderHeight>
                 <ColliderOffset>0.22</ColliderOffset>
             </WheelPlacementCollider>
@@ -2187,7 +2187,7 @@
             <MountPoints>
             </MountPoints>
             <WheelPlacementCollider>
-                <ColliderDiameter>1</ColliderDiameter>
+                <ColliderDiameter>0.9</ColliderDiameter>
                 <ColliderHeight>0.9</ColliderHeight>
                 <ColliderOffset>0.08</ColliderOffset>
             </WheelPlacementCollider>
@@ -2255,7 +2255,7 @@
             <MountPoints>
             </MountPoints>
             <WheelPlacementCollider>
-                <ColliderDiameter>1</ColliderDiameter>
+                <ColliderDiameter>0.9</ColliderDiameter>
                 <ColliderHeight>0.88</ColliderHeight>
                 <ColliderOffset>0.28</ColliderOffset>
             </WheelPlacementCollider>
@@ -2323,7 +2323,7 @@
             <MountPoints>
             </MountPoints>
             <WheelPlacementCollider>
-                <ColliderDiameter>1</ColliderDiameter>
+                <ColliderDiameter>0.9</ColliderDiameter>
                 <ColliderHeight>0.62</ColliderHeight>
                 <ColliderOffset>0.36</ColliderOffset>
             </WheelPlacementCollider>
@@ -2392,7 +2392,7 @@
             <MountPoints>
             </MountPoints>
             <WheelPlacementCollider>
-                <ColliderDiameter>0.95</ColliderDiameter>
+                <ColliderDiameter>0.9</ColliderDiameter>
                 <ColliderHeight>0.9</ColliderHeight>
                 <ColliderOffset>0.15</ColliderOffset>
             </WheelPlacementCollider>
@@ -2460,11 +2460,6 @@
                     <MinAllowed>0.01</MinAllowed>
                 </DynamicMode>
             </VoxelPlacement>
-            <WheelPlacementCollider>
-                <ColliderDiameter>0.5</ColliderDiameter>
-                <ColliderHeight>0.5</ColliderHeight>
-                <ColliderOffset>0</ColliderOffset>
-            </WheelPlacementCollider>
             <BlockPairName>Wheel1x1</BlockPairName>
             <UsesDeformation>false</UsesDeformation>
             <DeformationRatio>0.3</DeformationRatio>
@@ -2524,11 +2519,6 @@
                     <MinAllowed>0.01</MinAllowed>
                 </DynamicMode>
             </VoxelPlacement>
-            <WheelPlacementCollider>
-                <ColliderDiameter>0.5</ColliderDiameter>
-                <ColliderHeight>0.5</ColliderHeight>
-                <ColliderOffset>0</ColliderOffset>
-            </WheelPlacementCollider>
             <MountPoints>
                 <MountPoint Side="Top" StartX="0.25" StartY="0.25" EndX="0.75" EndY="0.75" />
                 <MountPoint Side="Bottom" StartX="0.25" StartY="0.25" EndX="0.75" EndY="0.75" />
@@ -2596,11 +2586,6 @@
                 <MountPoint Side="Top" StartX="0.6" StartY="0.6" EndX="2.4" EndY="2.4" />
                 <MountPoint Side="Bottom" StartX="0.6" StartY="0.6" EndX="2.4" EndY="2.4" />
             </MountPoints>
-            <WheelPlacementCollider>
-                <ColliderDiameter>0.5</ColliderDiameter>
-                <ColliderHeight>0.5</ColliderHeight>
-                <ColliderOffset>0</ColliderOffset>
-            </WheelPlacementCollider>
             <BlockPairName>Wheel3x3</BlockPairName>
             <UsesDeformation>false</UsesDeformation>
             <DeformationRatio>0.3</DeformationRatio>
@@ -2662,11 +2647,6 @@
                 <MountPoint Side="Top" StartX="0.6" StartY="0.6" EndX="2.4" EndY="2.4" />
                 <MountPoint Side="Bottom" StartX="0.6" StartY="0.6" EndX="2.4" EndY="2.4" />
             </MountPoints>
-            <WheelPlacementCollider>
-                <ColliderDiameter>0.5</ColliderDiameter>
-                <ColliderHeight>0.5</ColliderHeight>
-                <ColliderOffset>0</ColliderOffset>
-            </WheelPlacementCollider>
             <BlockPairName>Wheel3x3</BlockPairName>
             <UsesDeformation>false</UsesDeformation>
             <DeformationRatio>0.3</DeformationRatio>
@@ -2730,11 +2710,6 @@
                 <MountPoint Side="Top" StartX="1" StartY="1" EndX="4" EndY="4" />
                 <MountPoint Side="Bottom" StartX="1" StartY="1" EndX="4" EndY="4" />
             </MountPoints>
-            <WheelPlacementCollider>
-                <ColliderDiameter>0.5</ColliderDiameter>
-                <ColliderHeight>0.5</ColliderHeight>
-                <ColliderOffset>0</ColliderOffset>
-            </WheelPlacementCollider>
             <BlockPairName>Wheel5x5</BlockPairName>
             <UsesDeformation>false</UsesDeformation>
             <DeformationRatio>0.3</DeformationRatio>
@@ -2797,11 +2772,6 @@
                 <MountPoint Side="Top" StartX="1" StartY="1" EndX="4" EndY="4" />
                 <MountPoint Side="Bottom" StartX="1" StartY="1" EndX="4" EndY="4" />
             </MountPoints>
-            <WheelPlacementCollider>
-                <ColliderDiameter>0.5</ColliderDiameter>
-                <ColliderHeight>0.5</ColliderHeight>
-                <ColliderOffset>0</ColliderOffset>
-            </WheelPlacementCollider>
             <BlockPairName>Wheel5x5</BlockPairName>
             <DeformationRatio>0.3</DeformationRatio>
             <UsesDeformation>false</UsesDeformation>
@@ -2865,11 +2835,6 @@
                     <MinAllowed>0.01</MinAllowed>
                 </DynamicMode>
             </VoxelPlacement>
-            <WheelPlacementCollider>
-                <ColliderDiameter>0.5</ColliderDiameter>
-                <ColliderHeight>0.5</ColliderHeight>
-                <ColliderOffset>0</ColliderOffset>
-            </WheelPlacementCollider>
             <BlockPairName>Wheel2x2</BlockPairName>
             <UsesDeformation>false</UsesDeformation>
             <DeformationRatio>0.3</DeformationRatio>
@@ -2933,11 +2898,6 @@
                 <MountPoint Side="Top" StartX="0.4" StartY="0.4" EndX="1.6" EndY="1.6" Default="true" />
                 <MountPoint Side="Bottom" StartX="0.4" StartY="0.4" EndX="1.6" EndY="1.6" />
             </MountPoints>
-            <WheelPlacementCollider>
-                <ColliderDiameter>0.5</ColliderDiameter>
-                <ColliderHeight>0.5</ColliderHeight>
-                <ColliderOffset>0</ColliderOffset>
-            </WheelPlacementCollider>
             <BlockPairName>Wheel2x2</BlockPairName>
             <UsesDeformation>false</UsesDeformation>
             <DeformationRatio>0.3</DeformationRatio>
@@ -3140,7 +3100,7 @@
                 <SubtypeId>ShortSuspension1x1</SubtypeId>
             </Id>
             <DisplayName>DisplayName_Block_ShortSuspension1x1</DisplayName>
-            <Icon>Textures\GUI\Icons\Cubes\WheelSuspension1x1Right.dds</Icon>
+            <Icon>Textures\GUI\Icons\Cubes\ShortWheelSuspension1x1Right.dds</Icon>
             <Description>Description_Suspension</Description>
             <CubeSize>Large</CubeSize>
             <GuiVisible>false</GuiVisible>
@@ -3476,7 +3436,7 @@
                 <SubtypeId>SmallShortSuspension1x1</SubtypeId>
             </Id>
             <DisplayName>DisplayName_Block_ShortSuspension1x1</DisplayName>
-            <Icon>Textures\GUI\Icons\Cubes\WheelSuspension1x1Right.dds</Icon>
+            <Icon>Textures\GUI\Icons\Cubes\ShortWheelSuspension1x1Right.dds</Icon>
             <Description>Description_Suspension</Description>
             <CubeSize>Small</CubeSize>
             <GuiVisible>false</GuiVisible>
@@ -3813,7 +3773,7 @@
                 <SubtypeId>ShortSuspension1x1mirrored</SubtypeId>
             </Id>
             <DisplayName>DisplayName_Block_ShortSuspension1x1Mirrored</DisplayName>
-            <Icon>Textures\GUI\Icons\Cubes\WheelSuspension1x1Left.dds</Icon>
+            <Icon>Textures\GUI\Icons\Cubes\ShortWheelSuspension1x1Left.dds</Icon>
             <Description>Description_Suspension</Description>
             <CubeSize>Large</CubeSize>
             <GuiVisible>false</GuiVisible>
@@ -4152,7 +4112,7 @@
                 <SubtypeId>SmallShortSuspension1x1mirrored</SubtypeId>
             </Id>
             <DisplayName>DisplayName_Block_ShortSuspension1x1Mirrored</DisplayName>
-            <Icon>Textures\GUI\Icons\Cubes\WheelSuspension1x1Left.dds</Icon>
+            <Icon>Textures\GUI\Icons\Cubes\ShortWheelSuspension1x1Left.dds</Icon>
             <Description>Description_Suspension</Description>
             <CubeSize>Small</CubeSize>
             <GuiVisible>false</GuiVisible>

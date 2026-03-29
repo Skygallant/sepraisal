@@ -130,6 +130,9 @@
                 <TypeId>Cockpit</TypeId>
                 <SubtypeId>BuggyCockpit</SubtypeId>
             </Id>
+            <YesNoToolbarBackground>true</YesNoToolbarBackground>
+            <YesNoToolbarYesTooltip>YesNoToolbarTooltip_Cockpit_Yes</YesNoToolbarYesTooltip>
+            <YesNoToolbarNoTooltip>YesNoToolbarTooltip_Cockpit_No</YesNoToolbarNoTooltip>
             <DisplayName>DisplayName_Block_BuggyCockpit</DisplayName>
             <Icon>Textures\GUI\Icons\Cubes\BuggyCockpit_Racing.dds</Icon>
             <Description>Description_BuggyCockpit</Description>
@@ -1741,7 +1744,7 @@
                 </DynamicMode>
             </VoxelPlacement>
             <WheelPlacementCollider>
-                <ColliderDiameter>1</ColliderDiameter>
+                <ColliderDiameter>0.8</ColliderDiameter>
                 <ColliderHeight>0.9</ColliderHeight>
                 <ColliderOffset>0.08</ColliderOffset>
             </WheelPlacementCollider>
@@ -1882,7 +1885,7 @@
                 </DynamicMode>
             </VoxelPlacement>
             <WheelPlacementCollider>
-                <ColliderDiameter>1</ColliderDiameter>
+                <ColliderDiameter>0.9</ColliderDiameter>
                 <ColliderHeight>1.25</ColliderHeight>
                 <ColliderOffset>0.22</ColliderOffset>
             </WheelPlacementCollider>
@@ -2028,7 +2031,7 @@
                 </DynamicMode>
             </VoxelPlacement>
             <WheelPlacementCollider>
-                <ColliderDiameter>1</ColliderDiameter>
+                <ColliderDiameter>0.9</ColliderDiameter>
                 <ColliderHeight>0.9</ColliderHeight>
                 <ColliderOffset>0.08</ColliderOffset>
             </WheelPlacementCollider>
@@ -2101,7 +2104,7 @@
                 </DynamicMode>
             </VoxelPlacement>
             <WheelPlacementCollider>
-                <ColliderDiameter>1</ColliderDiameter>
+                <ColliderDiameter>0.9</ColliderDiameter>
                 <ColliderHeight>0.88</ColliderHeight>
                 <ColliderOffset>0.28</ColliderOffset>
             </WheelPlacementCollider>
@@ -2172,7 +2175,7 @@
                 </DynamicMode>
             </VoxelPlacement>
             <WheelPlacementCollider>
-                <ColliderDiameter>1</ColliderDiameter>
+                <ColliderDiameter>0.9</ColliderDiameter>
                 <ColliderHeight>0.62</ColliderHeight>
                 <ColliderOffset>0.36</ColliderOffset>
             </WheelPlacementCollider>
@@ -2319,7 +2322,7 @@
                 </DynamicMode>
             </VoxelPlacement>
             <WheelPlacementCollider>
-                <ColliderDiameter>1</ColliderDiameter>
+                <ColliderDiameter>0.8</ColliderDiameter>
                 <ColliderHeight>0.9</ColliderHeight>
                 <ColliderOffset>0.0058</ColliderOffset>
             </WheelPlacementCollider>
@@ -2460,7 +2463,7 @@
                 </DynamicMode>
             </VoxelPlacement>
             <WheelPlacementCollider>
-                <ColliderDiameter>1</ColliderDiameter>
+                <ColliderDiameter>0.9</ColliderDiameter>
                 <ColliderHeight>1.25</ColliderHeight>
                 <ColliderOffset>0.22</ColliderOffset>
             </WheelPlacementCollider>
@@ -2606,7 +2609,7 @@
                 </DynamicMode>
             </VoxelPlacement>
             <WheelPlacementCollider>
-                <ColliderDiameter>1</ColliderDiameter>
+                <ColliderDiameter>0.9</ColliderDiameter>
                 <ColliderHeight>0.9</ColliderHeight>
                 <ColliderOffset>0.08</ColliderOffset>
             </WheelPlacementCollider>
@@ -2679,7 +2682,7 @@
                 </DynamicMode>
             </VoxelPlacement>
             <WheelPlacementCollider>
-                <ColliderDiameter>1</ColliderDiameter>
+                <ColliderDiameter>0.9</ColliderDiameter>
                 <ColliderHeight>0.88</ColliderHeight>
                 <ColliderOffset>0.28</ColliderOffset>
             </WheelPlacementCollider>
@@ -2750,7 +2753,7 @@
                 </DynamicMode>
             </VoxelPlacement>
             <WheelPlacementCollider>
-                <ColliderDiameter>1</ColliderDiameter>
+                <ColliderDiameter>0.9</ColliderDiameter>
                 <ColliderHeight>0.62</ColliderHeight>
                 <ColliderOffset>0.36</ColliderOffset>
             </WheelPlacementCollider>
@@ -3739,7 +3742,7 @@
                 <SubtypeId>OffroadSmallShortSuspension3x3</SubtypeId>
             </Id>
             <DisplayName>DisplayName_Block_OffroadShortSuspension3x3</DisplayName>
-            <Icon>Textures\GUI\Icons\Cubes\SmallShortOffroadWheelsSuspension_3x3_Right.dds</Icon>
+            <Icon>Textures\GUI\Icons\Cubes\LargeShortOffroadWheelsSuspension_3x3_Right.dds</Icon>
             <Description>Description_Suspension</Description>
             <CubeSize>Small</CubeSize>
             <BlockTopology>TriangleMesh</BlockTopology>
@@ -3822,7 +3825,7 @@
                 <SubtypeId>OffroadSmallShortSuspension5x5</SubtypeId>
             </Id>
             <DisplayName>DisplayName_Block_OffroadShortSuspension5x5</DisplayName>
-            <Icon>Textures\GUI\Icons\Cubes\SmallShortOffroadWheelsSuspension_5x5_Right.dds</Icon>
+            <Icon>Textures\GUI\Icons\Cubes\LargeShortOffroadWheelsSuspension_5x5_Right.dds</Icon>
             <Description>Description_Suspension</Description>
             <CubeSize>Small</CubeSize>
             <GuiVisible>false</GuiVisible>
@@ -3907,7 +3910,7 @@
                 <SubtypeId>OffroadSmallShortSuspension1x1</SubtypeId>
             </Id>
             <DisplayName>DisplayName_Block_OffroadShortSuspension1x1</DisplayName>
-            <Icon>Textures\GUI\Icons\Cubes\SmallShortOffroadWheelsSuspension_1x1_Right.dds</Icon>
+            <Icon>Textures\GUI\Icons\Cubes\LargeShortOffroadWheelsSuspension_1x1_Right.dds</Icon>
             <Description>Description_Suspension</Description>
             <CubeSize>Small</CubeSize>
             <GuiVisible>false</GuiVisible>
@@ -3991,7 +3994,7 @@
                 <SubtypeId>OffroadSmallShortSuspension2x2</SubtypeId>
             </Id>
             <DisplayName>DisplayName_Block_OffroadShortSuspension2x2</DisplayName>
-            <Icon>Textures\GUI\Icons\Cubes\SmallShortOffroadWheelsSuspension_2x2_Right.dds</Icon>
+            <Icon>Textures\GUI\Icons\Cubes\LargeShortOffroadWheelsSuspension_2x2_Right.dds</Icon>
             <Description>Description_Suspension</Description>
             <CubeSize>Small</CubeSize>
             <BlockTopology>TriangleMesh</BlockTopology>
@@ -4422,7 +4425,7 @@
                 <SubtypeId>OffroadSmallShortSuspension3x3mirrored</SubtypeId>
             </Id>
             <DisplayName>DisplayName_Block_OffroadShortSuspension3x3mirrored</DisplayName>
-            <Icon>Textures\GUI\Icons\Cubes\SmallShortOffroadWheelsSuspension_3x3_Left.dds</Icon>
+            <Icon>Textures\GUI\Icons\Cubes\LargeShortOffroadWheelsSuspension_3x3_Left.dds</Icon>
             <Description>Description_Suspension</Description>
             <CubeSize>Small</CubeSize>
             <BlockTopology>TriangleMesh</BlockTopology>
@@ -4506,7 +4509,7 @@
                 <SubtypeId>OffroadSmallShortSuspension5x5mirrored</SubtypeId>
             </Id>
             <DisplayName>DisplayName_Block_OffroadShortSuspension5x5mirrored</DisplayName>
-            <Icon>Textures\GUI\Icons\Cubes\SmallShortOffroadWheelsSuspension_5x5_Left.dds</Icon>
+            <Icon>Textures\GUI\Icons\Cubes\LargeShortOffroadWheelsSuspension_5x5_Left.dds</Icon>
             <Description>Description_Suspension</Description>
             <CubeSize>Small</CubeSize>
             <GuiVisible>false</GuiVisible>
@@ -4591,7 +4594,7 @@
                 <SubtypeId>OffroadSmallShortSuspension1x1mirrored</SubtypeId>
             </Id>
             <DisplayName>DisplayName_Block_OffroadShortSuspension1x1Mirrored</DisplayName>
-            <Icon>Textures\GUI\Icons\Cubes\SmallShortOffroadWheelsSuspension_1x1_Left.dds</Icon>
+            <Icon>Textures\GUI\Icons\Cubes\LargeShortOffroadWheelsSuspension_1x1_Left.dds</Icon>
             <Description>Description_Suspension</Description>
             <CubeSize>Small</CubeSize>
             <GuiVisible>false</GuiVisible>
@@ -4675,7 +4678,7 @@
                 <SubtypeId>OffroadSmallShortSuspension2x2Mirrored</SubtypeId>
             </Id>
             <DisplayName>DisplayName_Block_OffroadShortSuspension2x2Mirrored</DisplayName>
-            <Icon>Textures\GUI\Icons\Cubes\SmallShortOffroadWheelsSuspension_2x2_Left.dds</Icon>
+            <Icon>Textures\GUI\Icons\Cubes\LargeShortOffroadWheelsSuspension_2x2_Left.dds</Icon>
             <Description>Description_Suspension</Description>
             <CubeSize>Small</CubeSize>
             <BlockTopology>TriangleMesh</BlockTopology>

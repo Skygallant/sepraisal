@@ -13,6 +13,14 @@ There are two ways to "save" the database:
 
 ## Setup on Debian 13
 
+Automated setup from the repo root:
+
+```sh
+sudo bash ./workspaces/server/utils/setup-debian13.sh --force-bookworm-mongodb-repo
+```
+
+As of March 29, 2026, MongoDB's official Debian install docs list Debian 12 for `mongodb-org` 8.0, not Debian 13. The setup script therefore requires `--force-bookworm-mongodb-repo` to configure MongoDB on Debian 13, or `--skip-mongodb` if MongoDB is already installed.
+
 ```sh
 ## Install git
 sudo apt-get update
@@ -29,7 +37,9 @@ sudo corepack enable
 yarn --version
 
 ## Install MongoDB using the current Debian repository instructions from MongoDB.
-## The old Ubuntu focal / apt-key commands are obsolete on Debian 13.
+## As of 2026-03-29, the official MongoDB 8.0 Debian page lists Debian 12.
+## On Debian 13, either use the setup script with --force-bookworm-mongodb-repo
+## or install MongoDB separately and skip it in the script.
 sudo apt-get install -y mongodb-org
 mongod --version
 

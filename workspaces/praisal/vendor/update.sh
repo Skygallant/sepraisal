@@ -1,112 +1,271 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-set -x
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
+GAME_VERSION=""
 
-toUnicode() {
-    FILENAME=$1
-    temp_file=$(mktemp)
-    cp $FILENAME $temp_file
-    uconv -f utf8 -t utf8 --remove-signature $temp_file -o $FILENAME
+usage() {
+    cat <<'EOF'
+Usage: ./update.sh [--game-version <version>] <steam-library-root>
+
+Example:
+  ./update.sh "$HOME/.local/share/Steam"
+
+The argument must be the Steam library root that contains:
+  steamapps/common/SpaceEngineers/Content/Data
+EOF
 }
 
-# Linux only (because paths, feel free to improve).
-# first cd to sepraisal/workspaces/praisal/vendor.
+log() {
+    printf '[vendor-update] %s\n' "$*"
+}
 
-STEAM_DIR=$1
-SE_DIR="$STEAM_DIR/steamapps/common/SpaceEngineers"
-DATA_DIR="$SE_DIR/Content/Data"
+fail() {
+    printf '[vendor-update] %s\n' "$*" >&2
+    exit 1
+}
 
-# Vanilla
-FOLDER=Vanilla
-mkdir -p "$FOLDER"  # Ensure directory exists
-cp "$DATA_DIR/Blueprints.sbc" "$FOLDER"
-cp "$DATA_DIR/Components.sbc" "$FOLDER"
-cp "$DATA_DIR/PhysicalItems.sbc" "$FOLDER"
-find "$DATA_DIR/CubeBlocks" -name *.sbc\
-    | grep -v 'Frostbite'\
-    | grep -v 'Economy'\
-    | grep -v 'DecorativePack'\
-    | grep -v 'SparksOfTheFuturePack'\
-    | grep -v 'ScrapRacePack'\
-    | grep -v 'Warfare1'\
-    | grep -v 'IndustrialPack'\
-    | grep -v 'Warfare2'\
-    | grep -v 'Automation'\
-    | grep -v 'DecorativePack3'\
-    | grep -v 'SignalsPack'\
-    | grep -v 'ContactPack'\
-    | xargs cp -t "$FOLDER/CubeBlocks"
+require_command() {
+    command -v "$1" >/dev/null 2>&1 || fail "Missing required command: $1"
+}
 
-# Decorative Pack 1
-FOLDER=DecorativePack
-mkdir -p "$FOLDER"
-cp "$DATA_DIR/CubeBlocks/CubeBlocks_$FOLDER.sbc" "$FOLDER/CubeBlocks.sbc"
+parse_args() {
+    local positional=()
 
-# Decorative Pack 2
-FOLDER=DecorativePack2
-mkdir -p "$FOLDER"
-cp "$DATA_DIR/CubeBlocks/CubeBlocks_$FOLDER.sbc" "$FOLDER/CubeBlocks.sbc"
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --game-version)
+                [[ $# -ge 2 ]] || fail "Missing value for --game-version"
+                GAME_VERSION="$2"
+                shift 2
+                ;;
+            --help)
+                usage
+                exit 0
+                ;;
+            *)
+                positional+=("$1")
+                shift
+                ;;
+        esac
+    done
 
-# Economy
-FOLDER=Economy
-mkdir -p "$FOLDER"
-cp "$DATA_DIR/Blueprints_$FOLDER.sbc" "$FOLDER/Blueprints.sbc"
-cp "$DATA_DIR/Components_$FOLDER.sbc" "$FOLDER/Components.sbc"
-cp "$DATA_DIR/PhysicalItems_$FOLDER.sbc" "$FOLDER/PhysicalItems.sbc"
-cp "$DATA_DIR/CubeBlocks/CubeBlocks_$FOLDER.sbc" "$FOLDER/CubeBlocks.sbc"
+    [[ ${#positional[@]} -eq 1 ]] || {
+        usage
+        exit 1
+    }
 
-# Frostbite
-FOLDER=Frostbite
-mkdir -p "$FOLDER"
-cp "$DATA_DIR/CubeBlocks/CubeBlocks_$FOLDER.sbc" "$FOLDER/CubeBlocks.sbc"
+    printf '%s\n' "${positional[0]}"
+}
 
-# SparksOfTheFuturePack
-FOLDER=SparksOfTheFuturePack
-mkdir -p "$FOLDER"
-cp "$DATA_DIR/CubeBlocks/CubeBlocks_$FOLDER.sbc" "$FOLDER/CubeBlocks.sbc"
+copy_file() {
+    local source="$1"
+    local dest="$2"
 
-# ScrapRacePack
-FOLDER=ScrapRacePack
-mkdir -p "$FOLDER"
-cp "$DATA_DIR/CubeBlocks/CubeBlocks_$FOLDER.sbc" "$FOLDER/CubeBlocks.sbc"
+    [[ -f "$source" ]] || fail "Missing source file: $source"
+    cp "$source" "$dest"
+}
 
-# Warfare 1
-FOLDER=Warfare1
-mkdir -p "$FOLDER"
-cp "$DATA_DIR/CubeBlocks/CubeBlocks_$FOLDER.sbc" "$FOLDER/CubeBlocks.sbc"
+normalize_file() {
+    local filename="$1"
+    local temp_file
 
-# Industrial Pack
-FOLDER=IndustrialPack
-mkdir -p "$FOLDER"
-cp "$DATA_DIR/CubeBlocks/CubeBlocks_$FOLDER.sbc" "$FOLDER/CubeBlocks.sbc"
+    temp_file="$(mktemp)"
+    cp "$filename" "$temp_file"
+    uconv -f utf8 -t utf8 --remove-signature "$temp_file" -o "$filename"
+    rm -f "$temp_file"
+}
 
-# Warfare 2
-FOLDER=Warfare2
-mkdir -p "$FOLDER"
-cp "$DATA_DIR/CubeBlocks/CubeBlocks_$FOLDER.sbc" "$FOLDER/CubeBlocks.sbc"
+prepare_dir() {
+    local dir="$1"
+    mkdir -p "$dir"
+}
 
-# Automatons
-FOLDER=Automation
-mkdir -p "$FOLDER"
-cp "$DATA_DIR/CubeBlocks/CubeBlocks_$FOLDER.sbc" "$FOLDER/CubeBlocks.sbc"
+read_version_from_text_file() {
+    local candidate="$1"
 
-# Decorative Pack 3
-FOLDER=DecorativePack3
-mkdir -p "$FOLDER"
-cp "$DATA_DIR/CubeBlocks/CubeBlocks_$FOLDER.sbc" "$FOLDER/CubeBlocks.sbc"
+    [[ -f "$candidate" ]] || return 1
 
-# Signal Pack
-FOLDER=SignalsPack
-mkdir -p "$FOLDER"
-cp "$DATA_DIR/CubeBlocks/CubeBlocks_$FOLDER.sbc" "$FOLDER/CubeBlocks.sbc"
+    grep -Eom1 '[0-9]+\.[0-9]{3}\.[0-9]{3}' "$candidate" || return 1
+}
 
-# Contact Pack
-FOLDER=ContactPack
-mkdir -p "$FOLDER"
-cp "$DATA_DIR/CubeBlocks/CubeBlocks_$FOLDER.sbc" "$FOLDER/CubeBlocks.sbc"
+read_version_from_binary_file() {
+    local candidate="$1"
 
-for f in $(find . -name *.sbc)
-do
-    sed -i 's/\r$//' $f  # Change CRLF to LF.
-    toUnicode $f  # Change encoding to UTF-8 without BOM.
-done
+    [[ -f "$candidate" ]] || return 1
+
+    grep -aEo '[0-9]+\.[0-9]{3}\.[0-9]{3}' "$candidate" | sort -u | tail -n 1 || return 1
+}
+
+detect_game_version() {
+    local steam_dir="$1"
+    local se_dir="$2"
+    local candidate
+    local version
+
+    if [[ -n "$GAME_VERSION" ]]; then
+        printf '%s\n' "$GAME_VERSION"
+        return 0
+    fi
+
+    for candidate in \
+        "$se_dir/version.txt" \
+        "$se_dir/Version.txt" \
+        "$se_dir/Content/version.txt" \
+        "$se_dir/Content/Version.txt"
+    do
+        if version="$(read_version_from_text_file "$candidate")"; then
+            printf '%s\n' "$version"
+            return 0
+        fi
+    done
+
+    for candidate in \
+        "$se_dir/Bin64/SpaceEngineers.exe" \
+        "$se_dir/Bin/SpaceEngineers.exe"
+    do
+        if version="$(read_version_from_binary_file "$candidate")"; then
+            printf '%s\n' "$version"
+            return 0
+        fi
+    done
+
+    fail "Could not detect the Space Engineers version automatically. Re-run with --game-version <version>."
+}
+
+write_game_version() {
+    local steam_dir="$1"
+    local se_dir="$2"
+    local version
+
+    version="$(detect_game_version "$steam_dir" "$se_dir")"
+    printf '%s\n' "$version" > "$SCRIPT_DIR/version.txt"
+    log "Updated version.txt to $version"
+}
+
+copy_vanilla_cubeblocks() {
+    local source_dir="$1"
+    local dest_dir="$2"
+
+    prepare_dir "$dest_dir"
+
+    find "$dest_dir" -maxdepth 1 -type f -name '*.sbc' -delete
+
+    while IFS= read -r -d '' file; do
+        cp "$file" "$dest_dir/"
+    done < <(
+        find "$source_dir" -type f -name '*.sbc' \
+            ! -name '*Frostbite*' \
+            ! -name '*Economy*' \
+            ! -name '*DecorativePack*' \
+            ! -name '*SparksOfTheFuturePack*' \
+            ! -name '*ScrapRacePack*' \
+            ! -name '*Warfare1*' \
+            ! -name '*IndustrialPack*' \
+            ! -name '*Warfare2*' \
+            ! -name '*Automation*' \
+            ! -name '*DecorativePack3*' \
+            ! -name '*SignalsPack*' \
+            ! -name '*ContactPack*' \
+            -print0
+    )
+}
+
+main() {
+    local steam_dir
+    local se_dir
+    local data_dir
+    local folder
+
+    require_command cp
+    require_command find
+    require_command grep
+    require_command mktemp
+    require_command sort
+    require_command sed
+    require_command tail
+    require_command uconv
+
+    steam_dir="$(parse_args "$@")"
+    steam_dir="${steam_dir%/}"
+    se_dir="$steam_dir/steamapps/common/SpaceEngineers"
+    data_dir="$se_dir/Content/Data"
+
+    [[ -d "$data_dir" ]] || fail "Could not find Space Engineers data directory: $data_dir"
+
+    cd "$SCRIPT_DIR"
+
+    log "Updating vendor data from $data_dir"
+    write_game_version "$steam_dir" "$se_dir"
+
+    folder="Vanilla"
+    prepare_dir "$folder"
+    copy_file "$data_dir/Blueprints.sbc" "$folder/"
+    copy_file "$data_dir/Components.sbc" "$folder/"
+    copy_file "$data_dir/PhysicalItems.sbc" "$folder/"
+    copy_vanilla_cubeblocks "$data_dir/CubeBlocks" "$folder/CubeBlocks"
+
+    folder="DecorativePack"
+    prepare_dir "$folder"
+    copy_file "$data_dir/CubeBlocks/CubeBlocks_${folder}.sbc" "$folder/CubeBlocks.sbc"
+
+    folder="DecorativePack2"
+    prepare_dir "$folder"
+    copy_file "$data_dir/CubeBlocks/CubeBlocks_${folder}.sbc" "$folder/CubeBlocks.sbc"
+
+    folder="Economy"
+    prepare_dir "$folder"
+    copy_file "$data_dir/Blueprints_${folder}.sbc" "$folder/Blueprints.sbc"
+    copy_file "$data_dir/Components_${folder}.sbc" "$folder/Components.sbc"
+    copy_file "$data_dir/PhysicalItems_${folder}.sbc" "$folder/PhysicalItems.sbc"
+    copy_file "$data_dir/CubeBlocks/CubeBlocks_${folder}.sbc" "$folder/CubeBlocks.sbc"
+
+    folder="Frostbite"
+    prepare_dir "$folder"
+    copy_file "$data_dir/CubeBlocks/CubeBlocks_${folder}.sbc" "$folder/CubeBlocks.sbc"
+
+    folder="SparksOfTheFuturePack"
+    prepare_dir "$folder"
+    copy_file "$data_dir/CubeBlocks/CubeBlocks_${folder}.sbc" "$folder/CubeBlocks.sbc"
+
+    folder="ScrapRacePack"
+    prepare_dir "$folder"
+    copy_file "$data_dir/CubeBlocks/CubeBlocks_${folder}.sbc" "$folder/CubeBlocks.sbc"
+
+    folder="Warfare1"
+    prepare_dir "$folder"
+    copy_file "$data_dir/CubeBlocks/CubeBlocks_${folder}.sbc" "$folder/CubeBlocks.sbc"
+
+    folder="IndustrialPack"
+    prepare_dir "$folder"
+    copy_file "$data_dir/CubeBlocks/CubeBlocks_${folder}.sbc" "$folder/CubeBlocks.sbc"
+
+    folder="Warfare2"
+    prepare_dir "$folder"
+    copy_file "$data_dir/CubeBlocks/CubeBlocks_${folder}.sbc" "$folder/CubeBlocks.sbc"
+
+    folder="Automation"
+    prepare_dir "$folder"
+    copy_file "$data_dir/CubeBlocks/CubeBlocks_${folder}.sbc" "$folder/CubeBlocks.sbc"
+
+    folder="DecorativePack3"
+    prepare_dir "$folder"
+    copy_file "$data_dir/CubeBlocks/CubeBlocks_${folder}.sbc" "$folder/CubeBlocks.sbc"
+
+    folder="SignalsPack"
+    prepare_dir "$folder"
+    copy_file "$data_dir/CubeBlocks/CubeBlocks_${folder}.sbc" "$folder/CubeBlocks.sbc"
+
+    folder="ContactPack"
+    prepare_dir "$folder"
+    copy_file "$data_dir/CubeBlocks/CubeBlocks_${folder}.sbc" "$folder/CubeBlocks.sbc"
+
+    while IFS= read -r -d '' file; do
+        sed -i 's/\r$//' "$file"
+        normalize_file "$file"
+    done < <(find . -type f -name '*.sbc' -print0)
+
+    log "Vendor data update complete"
+}
+
+main "$@"

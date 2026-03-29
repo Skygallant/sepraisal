@@ -3,6 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 GAME_VERSION=""
+STEAM_DIR=""
 
 usage() {
     cat <<'EOF'
@@ -59,7 +60,7 @@ parse_args() {
         exit 1
     }
 
-    printf '%s\n' "${positional[0]}"
+    STEAM_DIR="${positional[0]}"
 }
 
 copy_file() {
@@ -205,7 +206,8 @@ main() {
         require_command mktemp
     fi
 
-    steam_dir="$(parse_args "$@")"
+    parse_args "$@"
+    steam_dir="$STEAM_DIR"
     steam_dir="${steam_dir%/}"
     se_dir="$steam_dir/steamapps/common/SpaceEngineers"
     data_dir="$se_dir/Content/Data"

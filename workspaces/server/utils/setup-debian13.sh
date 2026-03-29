@@ -196,11 +196,11 @@ install_node_dependencies() {
     run_as_service_user "cd '$INSTALL_ROOT' && yarn build"
 }
 
-run_reindex() {
+initialize_database() {
     (( SKIP_REINDEX )) && return 0
 
-    log "Running yarn reindex"
-    run_as_service_user "cd '$INSTALL_ROOT/workspaces/server' && yarn reindex"
+    log "Initializing MongoDB collection and indexes"
+    run_as_service_user "cd '$INSTALL_ROOT/workspaces/server' && yarn initdb"
 }
 
 install_service() {
@@ -253,7 +253,7 @@ main() {
     ensure_env_file
     ensure_script_permissions
     install_node_dependencies
-    run_reindex
+    initialize_database
     install_service
     print_summary
 }

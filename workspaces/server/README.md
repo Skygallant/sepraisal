@@ -4,7 +4,8 @@ SEPraisal Server serves praisals to [SEPraisal App](../app/README.md).
 
 SEPraisal Server takes them from a database, that is populated by [SEPraisal Crawler](../crawler/README.md).
 
-To enable text search and faster queries, run `yarn reindex`.
+To initialize the database collection and text search indexes, run `yarn initdb`.
+For an existing database that already has the `blueprints` collection, `yarn reindex` also works.
 
 There are two ways to "save" the database:
 - dump: several GBs of mongodb specific blob, that contains all data. Dump, restore, and you're good to go!
@@ -61,7 +62,7 @@ sudo -u sepraisal yarn build
 ## Index the database
 cd /srv/sepraisal/workspaces/server
 sudo -u sepraisal cp .env.example .env
-sudo -u sepraisal yarn reindex
+sudo -u sepraisal yarn initdb
 
 ## Test server
 cd /srv/sepraisal/workspaces/server

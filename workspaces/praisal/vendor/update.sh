@@ -71,6 +71,19 @@ copy_file() {
     cp "$source" "$dest"
 }
 
+copy_optional_file() {
+    local source="$1"
+    local dest="$2"
+
+    if [[ -f "$source" ]]; then
+        cp "$source" "$dest"
+        return 0
+    fi
+
+    rm -f "$dest"
+    log "Optional source file not found, removed stale target if present: $source"
+}
+
 normalize_file() {
     local filename="$1"
 
@@ -236,9 +249,9 @@ main() {
 
     folder="Economy"
     prepare_dir "$folder"
-    copy_file "$data_dir/Blueprints_${folder}.sbc" "$folder/Blueprints.sbc"
-    copy_file "$data_dir/Components_${folder}.sbc" "$folder/Components.sbc"
-    copy_file "$data_dir/PhysicalItems_${folder}.sbc" "$folder/PhysicalItems.sbc"
+    copy_optional_file "$data_dir/Blueprints_${folder}.sbc" "$folder/Blueprints.sbc"
+    copy_optional_file "$data_dir/Components_${folder}.sbc" "$folder/Components.sbc"
+    copy_optional_file "$data_dir/PhysicalItems_${folder}.sbc" "$folder/PhysicalItems.sbc"
     copy_file "$data_dir/CubeBlocks/CubeBlocks_${folder}.sbc" "$folder/CubeBlocks.sbc"
 
     folder="Frostbite"

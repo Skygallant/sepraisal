@@ -29,6 +29,10 @@ require_command() {
     command -v "$1" >/dev/null 2>&1 || fail "Missing required command: $1"
 }
 
+has_command() {
+    command -v "$1" >/dev/null 2>&1
+}
+
 parse_args() {
     local positional=()
 
@@ -68,12 +72,26 @@ copy_file() {
 
 normalize_file() {
     local filename="$1"
-    local temp_file
 
-    temp_file="$(mktemp)"
-    cp "$filename" "$temp_file"
-    uconv -f utf8 -t utf8 --remove-signature "$temp_file" -o "$filename"
-    rm -f "$temp_file"
+    if has_command uconv; then
+        local temp_file
+        temp_file="$(mktemp)"
+        cp "$filename" "$temp_file"
+        uconv -f utf8 -t utf8 --remove-signature "$temp_file" -o "$filename"
+        rm -f "$temp_file"
+        return 0
+    fi
+
+    if has_command iconv; then
+        local temp_file
+        temp_file="$(mktemp)"
+        iconv -f utf-8 -t utf-8 "$filename" > "$temp_file"
+        mv "$temp_file" "$filename"
+        sed -i $'1s/^\xEF\xBB\xBF//' "$filename"
+        return 0
+    fi
+
+    sed -i $'1s/^\xEF\xBB\xBF//' "$filename"
 }
 
 prepare_dir() {
@@ -180,11 +198,12 @@ main() {
     require_command cp
     require_command find
     require_command grep
-    require_command mktemp
     require_command sort
     require_command sed
     require_command tail
-    require_command uconv
+    if has_command uconv || has_command iconv; then
+        require_command mktemp
+    fi
 
     steam_dir="$(parse_args "$@")"
     steam_dir="${steam_dir%/}"

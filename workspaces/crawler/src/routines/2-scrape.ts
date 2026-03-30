@@ -97,6 +97,15 @@ const parseTitleFromHtml = (html: string): string | null => {
     return null
 }
 
+const stripHtml = (input: string): string =>
+    decodeHtmlEntity(input.replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim()
+
+const parseDetailStatDatesFromHtml = (html: string): Date[] =>
+    [...html.matchAll(/<div class="detailsStatRight">([\s\S]*?)<\/div>/g)]
+        .map((match) => stripHtml(match[1]))
+        .map((value) => dateConvert(value))
+        .filter((value): value is Date => value instanceof Date)
+
 const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
     const url = `https://steamcommunity.com/sharedfiles/filedetails/?id=${id}`
     const html = await steamFetchHtml(url)
@@ -153,17 +162,11 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
         : {} as Partial<IScrapeSteamData>
 
     // Check that data actually is there.
-    ;([
-        'postedDate',
-        // 'updatedDate',  // OK to be null, then defaults to postedDate.
-    ] as Array<keyof PickByValueExact<IScrapeSteamData, Date>>).forEach((prop) => {
-        if(!(dataRaw[prop] instanceof Date)) throw new Error(`Field ${prop} failed to scrape.`)
-    })
-
     const authors = Array.isArray(dataRaw.authors) ? dataRaw.authors : []
     const collections = Array.isArray(dataRaw.collections) ? dataRaw.collections : []
     const dlcs = Array.isArray(dataRaw.DLCs) ? dataRaw.DLCs : []
     const mods = Array.isArray(dataRaw.mods) ? dataRaw.mods : []
+    const detailStatDates = parseDetailStatDatesFromHtml(html)
     const title = typeof dataRaw.title === 'string' ? dataRaw.title : parseTitleFromHtml(html)
     if(typeof title !== 'string' || title === '') throw new Error('Field title failed to scrape.')
     const description = typeof dataRaw.description === 'string' ? dataRaw.description : ''
@@ -173,8 +176,9 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
     const sizeMB = typeof dataRaw.sizeMB === 'number' ? dataRaw.sizeMB : 0
     const subscriberCount = typeof dataRaw.subscriberCount === 'number' ? dataRaw.subscriberCount : 0
     const visitorCount = typeof dataRaw.visitorCount === 'number' ? dataRaw.visitorCount : 0
-    const postedDate = dataRaw.postedDate as Date
-    const updatedDate = dataRaw.updatedDate instanceof Date ? dataRaw.updatedDate : postedDate
+    const postedDate = dataRaw.postedDate instanceof Date ? dataRaw.postedDate : detailStatDates[0]
+    if(!(postedDate instanceof Date)) throw new Error('Field postedDate failed to scrape.')
+    const updatedDate = dataRaw.updatedDate instanceof Date ? dataRaw.updatedDate : detailStatDates[1] || postedDate
     const thumbName = typeof dataRaw._thumbName === 'string' || dataRaw._thumbName === null ? dataRaw._thumbName : null
     const ratingStars = typeof dataRaw.ratingStars === 'number' ? dataRaw.ratingStars : null
     const storedRatingCount = typeof dataRaw.ratingCount === 'number' ? dataRaw.ratingCount : null

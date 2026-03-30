@@ -37,7 +37,7 @@ export const STEAM_HTTPS_PROXY = crawler_https_proxy
 
 const shellEscape = (input: string): string => `'${input.replace(/'/g, `'\\''`)}'`
 const STEAM_WEB_USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36'
-const STEAM_CURL_FLAGS = '--connect-timeout 10 --max-time 20'
+const STEAM_CURL_FLAGS = '--connect-timeout 20 --max-time 40'
 const normalizeProxy = (proxy: string): string =>
     proxy.includes('://') ? proxy : `http://${proxy}`
 const steamCookieFlags = STEAM_COOKIE_FILE

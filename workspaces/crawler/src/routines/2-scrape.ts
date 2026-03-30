@@ -2,11 +2,10 @@ import { DB_NAME, DB_URL, IBlueprint, idFromHref, timeout, toMinSec, VENDOR_MOD,
 import moment from 'moment'
 import { Collection, MongoClient } from 'mongodb'
 import pad from 'pad'
-import scrapeIt from 'scrape-it'
 import { Omit, PickByValueExact } from 'utility-types'
 
 import { QUERIES } from '../queries'
-import { prepareQuery } from '../utils'
+import { prepareQuery, scrapeHtml, steamFetchHtml } from '../utils'
 
 
 type IFlagParam = Omit<IBlueprint.ISteam, 'flagsRed' | 'flagsYellow' | 'flagsGreen'>
@@ -81,6 +80,7 @@ const dateConvert = (steamDate: string) => {
 
 const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
     const url = `https://steamcommunity.com/sharedfiles/filedetails/?id=${id}`
+    const html = await steamFetchHtml(url)
 
     type IScrapeSteamDataOmits =
         | '_error'
@@ -99,7 +99,7 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
         | 'modsCount'
     type IScrapeSteamData = Omit<IFlagParam, IScrapeSteamDataOmits>
 
-    const {data: dataRaw} = await scrapeIt<IScrapeSteamData>(url, {
+    const dataRaw = scrapeHtml<IScrapeSteamData>(html, {
         id: {selector: 'a.sectionTab:nth-child(1)', attr: 'href', convert: idFromHref},
         title: {selector: '.workshopItemTitle'},
         authors: {listItem: 'div.creatorsBlock > div.friendBlock', data: {
@@ -129,7 +129,7 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
         subscriberCount: {selector: '.stats_table tr:nth-child(2) > td:nth-child(1)', convert: commaNumber},
         favoriteCount: {selector: '.stats_table tr:nth-child(3) > td:nth-child(1)', convert: commaNumber},
         description: {selector: '.workshopItemDescription', how: 'html'},
-    } as Record<keyof IScrapeSteamData, scrapeIt.ScrapeOptions>)
+    } as Record<keyof IScrapeSteamData, unknown>)
 
     // Check that data actually is there.
     ;([
@@ -216,7 +216,16 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
 
 const removeRemoved = async (collection: Collection<IBlueprint>, doc: IProjection, prefix: string): Promise<boolean> => {
     const url = `https://steamcommunity.com/sharedfiles/filedetails/?id=${doc._id}`
-    const {data} = await scrapeIt<{adultGate: boolean, removed: boolean, breadcumb: string}>(url, {
+    const html = await steamFetchHtml(url).catch((err: Error) => {
+        if(String(err.message).includes('Steam access denied')) {
+            console.warn(`${prefix}Steam access denied while checking removal state.`)
+            return ''
+        }
+        throw err
+    })
+    if(html === '') return true
+
+    const data = scrapeHtml<{adultGate: boolean, removed: boolean, breadcumb: string}>(html, {
         adultGate: {selector: '.adult_content_age_gate', attr: 'class', convert: (str) => str === 'adult_content_age_gate'},
         breadcumb: {selector: '.breadcrumbs > a:nth-child(1)'},
         removed: {selector: '#message > h3', convert: (str) => str.includes('There was a problem accessing the item.')},
@@ -243,7 +252,7 @@ const removeRemoved = async (collection: Collection<IBlueprint>, doc: IProjectio
             return true
         }
         default: {
-            await collection.deleteOne({id: doc._id})
+            await collection.deleteOne({_id: doc._id})
             console.warn(`${prefix}Cleanup from "${data.breadcumb}".. how did it get here?`)
 
             return true
@@ -263,9 +272,9 @@ const work: Work<IWorkItem> = async (collection: Collection, doc: IProjection, i
         steam = await timeout(9, scrape(doc._id))
     } catch(err) {
         try {
-            if(!await timeout(9, removeRemoved(collection, doc, prefix))) console.error(`${prefix}legit error: ${err}`)
+            if(!await timeout(9, removeRemoved(collection, doc, prefix))) console.error(`${prefix}legit error: ${err instanceof Error ? err.message : err}`)
         } catch(err2) {
-            console.error(`${prefix}Failed to scrape.`)
+            console.error(`${prefix}Failed to scrape: ${err2 instanceof Error ? err2.message : err2}`)
         }
 
         return

@@ -3,7 +3,7 @@ import { Collection, MongoClient } from 'mongodb'
 import pad from 'pad'
 
 import { QUERIES } from '../queries'
-import { execAsync, execAsyncBuffer, lstatAsync, mkdirpSync, prepareQuery, thumbLink, thumbPath } from '../utils'
+import { execAsync, execAsyncBuffer, lstatAsync, mkdirpSync, prepareQuery, steamDownloadFile, thumbLink, thumbPath } from '../utils'
 
 
 const QUALITY = 10000  // In bytes. 3000 is the lowest that doesn't make eyes bleed.
@@ -36,7 +36,7 @@ const thumbConvert = async (idPair: string) => {
     mkdirpSync(safeFilename)
 
     if(!await lstatAsync(safeFilename)) {
-        await execAsync(`curl -s '${thumbLink(idPair)}' -o '${safeFilename}'`)
+        await steamDownloadFile(thumbLink(idPair), safeFilename)
     }
 
     const format = (await execAsync(`identify -format "%m\n" ${safeFilename} | head -n1`)).trim() as 'PNG' | 'JPEG' | 'GIF'

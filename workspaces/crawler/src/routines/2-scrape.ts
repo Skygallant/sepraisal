@@ -1,5 +1,5 @@
 import { DB_NAME, DB_URL, IBlueprint, idFromHref, timeout, toMinSec, VENDOR_MOD, Work, Worker } from '@sepraisal/common'
-import * as cheerio from 'cheerio'
+import cheerio = require('cheerio')
 import { existsSync, mkdirSync, writeFileSync } from 'fs'
 import moment from 'moment'
 import { Collection, MongoClient } from 'mongodb'
@@ -115,7 +115,7 @@ const textOrNull = (value: string | null | undefined): string | null => {
     return trimmed === '' ? null : trimmed
 }
 
-const firstTextNode = ($element: cheerio.Cheerio): string | null => {
+const firstTextNode = ($element: Cheerio): string | null => {
     const node = $element.contents().toArray().find((child) => child.type === 'text')
     if(!node || typeof node.data !== 'string') return null
 
@@ -184,7 +184,7 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
     const dlcs = $('.requiredDLCContainer > .requiredDLCItem > a').toArray().map((element) => {
         const href = textOrNull($(element).attr('href'))
 
-        return href ? {id: dlcsConvert(href)} : null
+        return href ? dlcsConvert(href) : null
     }).filter((value): value is NonNullable<typeof value> => value !== null)
     const mods = $('#RequiredItems > a').toArray().map((element) => {
         const item = $(element)
@@ -297,7 +297,7 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
             sizeMB,
             revision,
             mods,
-            DLCs: dlcs.map(({id: dlcId}: any) => dlcId),
+            DLCs: dlcs,
             collections,
             ratingStars,
             ratingCount: storedRatingCount,
@@ -338,7 +338,7 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
         revision,
         mods,
         /* eslint-disable-next-line @typescript-eslint/no-explicit-any */  // Hack around enforced object due scraping.
-        DLCs: dlcs.map(({id}: any) => id),
+        DLCs: dlcs,
         collections,
         ratingStars,
         ratingCount: storedRatingCount,

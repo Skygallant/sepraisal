@@ -164,14 +164,27 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
     const collections = Array.isArray(dataRaw.collections) ? dataRaw.collections : []
     const dlcs = Array.isArray(dataRaw.DLCs) ? dataRaw.DLCs : []
     const mods = Array.isArray(dataRaw.mods) ? dataRaw.mods : []
+    const title = dataRaw.title as string
+    const description = dataRaw.description as string
+    const commentCount = dataRaw.commentCount as number
+    const favoriteCount = dataRaw.favoriteCount as number
+    const revision = dataRaw.revision as number
+    const sizeMB = dataRaw.sizeMB as number
+    const subscriberCount = dataRaw.subscriberCount as number
+    const visitorCount = dataRaw.visitorCount as number
+    const postedDate = dataRaw.postedDate as Date
+    const updatedDate = dataRaw.updatedDate instanceof Date ? dataRaw.updatedDate : postedDate
+    const thumbName = typeof dataRaw._thumbName === 'string' || dataRaw._thumbName === null ? dataRaw._thumbName : null
+    const ratingStars = typeof dataRaw.ratingStars === 'number' ? dataRaw.ratingStars : null
+    const storedRatingCount = typeof dataRaw.ratingCount === 'number' ? dataRaw.ratingCount : null
 
 
-    const ratingCount = (dataRaw.ratingCount !== null ? dataRaw.ratingCount : 0)
-    const exposureMax = Math.max(dataRaw.visitorCount, dataRaw.subscriberCount)
-    const exposureTotal = dataRaw.visitorCount + dataRaw.subscriberCount
-    const activityMax = Math.max(ratingCount, dataRaw.commentCount, dataRaw.favoriteCount)
-    const activityTotal = ratingCount + dataRaw.commentCount + dataRaw.favoriteCount
-    const popularity = dataRaw.subscriberCount / Math.sqrt(Math.min(30, moment().diff(dataRaw.postedDate, 'd')))
+    const ratingCount = storedRatingCount !== null ? storedRatingCount : 0
+    const exposureMax = Math.max(visitorCount, subscriberCount)
+    const exposureTotal = visitorCount + subscriberCount
+    const activityMax = Math.max(ratingCount, commentCount, favoriteCount)
+    const activityTotal = ratingCount + commentCount + favoriteCount
+    const popularity = subscriberCount / Math.sqrt(Math.min(30, moment().diff(postedDate, 'd')))
     const authorsCount = authors.length
     const collectionsCount = collections.length
     const DLCsCount = dlcs.length
@@ -179,25 +192,25 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
 
     const dataForFlags: IFlagParam = {
         id,
-        title: dataRaw.title,
+        title,
         authors,
-        description: dataRaw.description,
-        _thumbName: dataRaw._thumbName,
+        description,
+        _thumbName: thumbName,
         _updated: new Date(),
-        postedDate: dataRaw.postedDate,
-        updatedDate: dataRaw.updatedDate || dataRaw.postedDate,  // UpdatedDate doesn't exist if posted but not updated.
-        sizeMB: dataRaw.sizeMB,
-        revision: dataRaw.revision,
+        postedDate,
+        updatedDate,  // UpdatedDate doesn't exist if posted but not updated.
+        sizeMB,
+        revision,
         mods,
         /* eslint-disable-next-line @typescript-eslint/no-explicit-any */  // Hack around enforced object due scraping.
         DLCs: dlcs.map(({id}: any) => id),
         collections,
-        ratingStars: dataRaw.ratingStars,
-        ratingCount: dataRaw.ratingCount,
-        commentCount: dataRaw.commentCount,
-        visitorCount: dataRaw.visitorCount,
-        subscriberCount: dataRaw.subscriberCount,
-        favoriteCount: dataRaw.favoriteCount,
+        ratingStars,
+        ratingCount: storedRatingCount,
+        commentCount,
+        visitorCount,
+        subscriberCount,
+        favoriteCount,
 
         _revision: null,
         _version: IBlueprint.VERSION.steam,

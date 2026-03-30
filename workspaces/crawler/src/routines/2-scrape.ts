@@ -225,7 +225,7 @@ const removeRemoved = async (collection: Collection<IBlueprint>, doc: IProjectio
     })
     if(html === '') return true
 
-    const data = scrapeHtml<{
+    const dataRaw = scrapeHtml<{
         adultGate?: boolean,
         removed?: boolean,
         breadcumb?: string,
@@ -234,6 +234,7 @@ const removeRemoved = async (collection: Collection<IBlueprint>, doc: IProjectio
         breadcumb: {selector: '.breadcrumbs > a:nth-child(1)'},
         removed: {selector: '#message > h3', convert: (str) => str.includes('There was a problem accessing the item.')},
     })
+    const data = dataRaw && typeof dataRaw === 'object' ? dataRaw : {}
     const breadcumb = typeof data.breadcumb === 'string' ? data.breadcumb : ''
     const removed = data.removed === true
     const adultGate = data.adultGate === true

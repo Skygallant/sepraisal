@@ -127,7 +127,7 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
         }},
         ratingStars: {selector: '.ratingSection img', attr: 'src', convert: ratingStarsConvert},
         ratingCount: {selector: '.ratingSection .numRatings', convert: ratingCountConvert},
-        commentCount: {selector: 'a.sectionTab:nth-child(3) > span:nth-child(1) > span:nth-child(1)', convert: commaNumber},
+        commentCount: {selector: 'a.sectionTab.comments .tabCount', convert: commaNumber},
         _thumbName: {selector: '#previewImageMain,#previewImage', attr: 'src', convert: thumbIdConvert},
         sizeMB: {selector: '.detailsStatsContainerRight > .detailsStatRight:nth-child(1)', convert: suffixConvert},
         postedDate: {selector: '.detailsStatsContainerRight > .detailsStatRight:nth-child(2)', convert: dateConvert},
@@ -155,7 +155,6 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
 
     // Check that data actually is there.
     ;([
-        'commentCount',
         'favoriteCount',
         'id',
         'revision',
@@ -179,7 +178,7 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
     const title = typeof dataRaw.title === 'string' ? dataRaw.title : parseTitleFromHtml(html)
     if(typeof title !== 'string' || title === '') throw new Error('Field title failed to scrape.')
     const description = typeof dataRaw.description === 'string' ? dataRaw.description : ''
-    const commentCount = dataRaw.commentCount as number
+    const commentCount = typeof dataRaw.commentCount === 'number' ? dataRaw.commentCount : 0
     const favoriteCount = dataRaw.favoriteCount as number
     const revision = dataRaw.revision as number
     const sizeMB = dataRaw.sizeMB as number

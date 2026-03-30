@@ -79,6 +79,24 @@ const dateConvert = (steamDate: string) => {
         .toDate()
 }
 
+const decodeHtmlEntity = (input: string): string =>
+    input
+        .replace(/&amp;/g, '&')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, '\'')
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+
+const parseTitleFromHtml = (html: string): string | null => {
+    const ogTitle = html.match(/<meta\s+property="og:title"\s+content="([^"]+)"/i)
+    if(ogTitle && ogTitle[1]) return decodeHtmlEntity(ogTitle[1]).replace(/^Steam Workshop::/, '').trim()
+
+    const titleTag = html.match(/<title>\s*([^<]+?)\s*<\/title>/i)
+    if(titleTag && titleTag[1]) return decodeHtmlEntity(titleTag[1]).replace(/^Steam Workshop::/, '').trim()
+
+    return null
+}
+
 const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
     const url = `https://steamcommunity.com/sharedfiles/filedetails/?id=${id}`
     const html = await steamFetchHtml(url)
@@ -137,11 +155,6 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
 
     // Check that data actually is there.
     ;([
-        'title',
-    ] as Array<keyof PickByValueExact<IScrapeSteamData, string>>).forEach((prop) => {
-        if(typeof dataRaw[prop] !== 'string') throw new Error(`Field ${prop} failed to scrape.`)
-    })
-    ;([
         'commentCount',
         'favoriteCount',
         'id',
@@ -163,7 +176,8 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
     const collections = Array.isArray(dataRaw.collections) ? dataRaw.collections : []
     const dlcs = Array.isArray(dataRaw.DLCs) ? dataRaw.DLCs : []
     const mods = Array.isArray(dataRaw.mods) ? dataRaw.mods : []
-    const title = dataRaw.title as string
+    const title = typeof dataRaw.title === 'string' ? dataRaw.title : parseTitleFromHtml(html)
+    if(typeof title !== 'string' || title === '') throw new Error('Field title failed to scrape.')
     const description = typeof dataRaw.description === 'string' ? dataRaw.description : ''
     const commentCount = dataRaw.commentCount as number
     const favoriteCount = dataRaw.favoriteCount as number

@@ -226,6 +226,12 @@ const removeRemoved = async (collection: Collection<IBlueprint>, doc: IProjectio
     })
     if(html === '') return true
 
+    const looksLikeWorkshopPage =
+        html.includes('class="workshopItemTitle"')
+        || html.includes('<title>Steam Workshop::')
+        || html.includes(`sharedfiles/filedetails/?id=${doc._id}`)
+    if(looksLikeWorkshopPage) return false
+
     const dataRaw = scrapeHtml<{
         adultGate?: boolean,
         removed?: boolean,

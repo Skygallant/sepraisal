@@ -111,9 +111,9 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
         ratingCount: {selector: '.ratingSection .numRatings', convert: ratingCountConvert},
         commentCount: {selector: 'a.sectionTab:nth-child(3) > span:nth-child(1) > span:nth-child(1)', convert: commaNumber},
         _thumbName: {selector: '#previewImageMain,#previewImage', attr: 'src', convert: thumbIdConvert},
-        sizeMB: {selector: 'div.detailsStatRight:nth-child(1)', convert: suffixConvert},
-        postedDate: {selector: 'div.detailsStatRight:nth-child(2)', convert: dateConvert},
-        updatedDate: {selector: 'div.detailsStatRight:nth-child(3)', convert: dateConvert},
+        sizeMB: {selector: '.detailsStatsContainerRight > .detailsStatRight:nth-child(1)', convert: suffixConvert},
+        postedDate: {selector: '.detailsStatsContainerRight > .detailsStatRight:nth-child(2)', convert: dateConvert},
+        updatedDate: {selector: '.detailsStatsContainerRight > .detailsStatRight:nth-child(3)', convert: dateConvert},
         revision: {selector: '.detailsStatNumChangeNotes', convert: suffixConvert},
         mods: {listItem: '#RequiredItems > a', data: {
             id: {attr: 'href', convert: idFromHref},
@@ -230,21 +230,25 @@ const removeRemoved = async (collection: Collection<IBlueprint>, doc: IProjectio
         adultGate?: boolean,
         removed?: boolean,
         breadcumb?: string,
+        workshopTitle?: string,
     }>(html, {
         adultGate: {selector: '.adult_content_age_gate', attr: 'class', convert: (str) => str === 'adult_content_age_gate'},
         breadcumb: {selector: '.breadcrumbs > a:nth-child(1)'},
         removed: {selector: '#message > h3', convert: (str) => str.includes('There was a problem accessing the item.')},
+        workshopTitle: {selector: '.workshopItemTitle'},
     })
     const data = dataRaw && typeof dataRaw === 'object' ? dataRaw : {}
     const breadcumb = typeof data.breadcumb === 'string' ? data.breadcumb : ''
     const removed = data.removed === true
     const adultGate = data.adultGate === true
+    const workshopTitle = typeof data.workshopTitle === 'string' ? data.workshopTitle : ''
 
     switch(breadcumb) {
         case('Space Engineers'): {
             return false  // not to remove.
         }
         case(''): {
+            if(workshopTitle !== '') return false
             if(removed) {
                 try {
                     await collection.deleteOne({_id: doc._id})

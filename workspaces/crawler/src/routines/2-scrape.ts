@@ -1,10 +1,11 @@
 import { DB_NAME, DB_URL, IBlueprint, idFromHref, timeout, toMinSec, VENDOR_MOD, Work, Worker } from '@sepraisal/common'
+import * as cheerio from 'cheerio'
 import { existsSync, mkdirSync, writeFileSync } from 'fs'
 import moment from 'moment'
 import { Collection, MongoClient } from 'mongodb'
 import pad from 'pad'
 import { join } from 'path'
-import { Omit, PickByValueExact } from 'utility-types'
+import { Omit } from 'utility-types'
 
 import { QUERIES } from '../queries'
 import { ensureSteamCmdLogin, prepareQuery, scrapeHtml, steamFetchHtml } from '../utils'
@@ -66,7 +67,6 @@ const VENDOR_ID_TO_MOD = {
 const thumbIdConvert = (url: string) => url.includes('default_image') ? null : `${url.split('/')[4]}-${url.split('/')[5]}`
 const commaNumber = (rawNumber: string) => Number(rawNumber.replace(',', ''))
 const authorIdConvert = (input: string) => (input.match(/com\/(.*)/) || [''])[1]
-const authorTitleConvert = (input: string) => (input.match(/(.*?)\r/) || [''])[1]
 const ratingStarsConvert = (input: string) => input.includes('not-yet') ? null : Number((input.match(/(\d)-star_large\.png/) || [null])[1])
 const ratingCountConvert = (input: string) => input === '' ? null : Number((input.replace(',', '').match(/(\d+(\.\d+)?)/) || [null])[1])
 const suffixConvert = (input: string) => Number((input.replace(',', '').match(/(\d+(\.\d+)?)/) || [''])[1])
@@ -75,9 +75,10 @@ const dlcsConvert = (input: string): VENDOR_MOD => VENDOR_ID_TO_MOD[Number(input
 const dateConvert = (steamDate: string) => {
     if(steamDate === '') return null
 
-    return moment(steamDate, steamDate.includes(',') ? 'DD MMM, YYYY @ h:ma' : 'DD MMM @ h:ma')
-        .utc()  // Steam shows local time, so convert back to UTC.
-        .toDate()
+    const parsed = moment(steamDate, steamDate.includes(',') ? 'DD MMM, YYYY @ h:ma' : 'DD MMM @ h:ma', true)
+    if(!parsed.isValid()) return null
+
+    return parsed.utc().toDate()  // Steam shows local time, so convert back to UTC.
 }
 
 const decodeHtmlEntity = (input: string): string =>
@@ -106,6 +107,20 @@ const parseDetailStatDatesFromHtml = (html: string): Date[] =>
         .map((match) => stripHtml(match[1]))
         .map((value) => dateConvert(value))
         .filter((value): value is Date => value instanceof Date)
+
+const textOrNull = (value: string | null | undefined): string | null => {
+    if(typeof value !== 'string') return null
+    const trimmed = value.trim()
+
+    return trimmed === '' ? null : trimmed
+}
+
+const firstTextNode = ($element: cheerio.Cheerio): string | null => {
+    const node = $element.contents().toArray().find((child) => child.type === 'text')
+    if(!node || typeof node.data !== 'string') return null
+
+    return textOrNull(node.data)
+}
 
 const SCRAPE_DEBUG_ENABLED = /^(1|true|yes)$/i.test(process.env.crawler_debug_scrape || '')
 
@@ -139,45 +154,92 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
         | 'modsCount'
     type IScrapeSteamData = Omit<IFlagParam, IScrapeSteamDataOmits>
 
-    const parsed = scrapeHtml<Partial<IScrapeSteamData> | undefined>(html, {
-        title: {selector: '.workshopItemTitle'},
-        authors: {listItem: 'div.creatorsBlock > div.friendBlock', data: {
-            id: {selector: '.friendBlockLinkOverlay', attr: 'href', convert: authorIdConvert},
-            title: {selector: '.friendBlockContent', convert: authorTitleConvert},
-        }},
-        ratingStars: {selector: '.ratingSection img', attr: 'src', convert: ratingStarsConvert},
-        ratingCount: {selector: '.ratingSection .numRatings', convert: ratingCountConvert},
-        commentCount: {selector: 'a.sectionTab.comments .tabCount', convert: commaNumber},
-        _thumbName: {selector: '#previewImageMain,#previewImage', attr: 'src', convert: thumbIdConvert},
-        sizeMB: {selector: '.detailsStatsContainerRight > .detailsStatRight:nth-child(1)', convert: suffixConvert},
-        postedDate: {selector: '.detailsStatsContainerRight > .detailsStatRight:nth-child(2)', convert: dateConvert},
-        updatedDate: {selector: '.detailsStatsContainerRight > .detailsStatRight:nth-child(3)', convert: dateConvert},
-        revision: {selector: '.detailsStatNumChangeNotes', convert: suffixConvert},
-        mods: {listItem: '#RequiredItems > a', data: {
-            id: {attr: 'href', convert: idFromHref},
-            title: {selector: '.requiredItem'},
-        }},
-        DLCs: {listItem: '.requiredDLCContainer > .requiredDLCItem > a', data: {
-            id: {attr: 'href', convert: dlcsConvert}
-        }},
-        collections: {listItem: 'div.parentCollections > div.parentCollection', data: {
-            id: {attr: 'onclick', convert: idFromHref},
-            title: {selector: '.parentCollectionTitle'},
-        }},
-        visitorCount: {selector: '.stats_table tr:nth-child(1) > td:nth-child(1)', convert: commaNumber},
-        subscriberCount: {selector: '.stats_table tr:nth-child(2) > td:nth-child(1)', convert: commaNumber},
-        favoriteCount: {selector: '.stats_table tr:nth-child(3) > td:nth-child(1)', convert: commaNumber},
-        description: {selector: '.workshopItemDescription', how: 'html'},
-    } as Record<keyof IScrapeSteamData, unknown>)
-    const dataRaw = parsed && typeof parsed === 'object'
-        ? parsed
-        : {} as Partial<IScrapeSteamData>
+    const $ = cheerio.load(html)
+    const detailsStatRight = $('.detailsStatsContainerRight .detailsStatRight').toArray()
+        .map((element) => textOrNull($(element).text()))
+        .filter((value): value is string => value !== null)
+    const statsRows = $('.stats_table tr').toArray().map((element) =>
+        $(element).find('td').toArray().map((td) => textOrNull($(td).text()) || '')
+    )
+    const authors = $('div.creatorsBlock > div.friendBlock').toArray().map((element) => {
+        const block = $(element)
+        const href = textOrNull(block.find('.friendBlockLinkOverlay').attr('href'))
+        const authorTitle = firstTextNode(block.find('.friendBlockContent'))
 
-    // Check that data actually is there.
-    const authors = Array.isArray(dataRaw.authors) ? dataRaw.authors : []
-    const collections = Array.isArray(dataRaw.collections) ? dataRaw.collections : []
-    const dlcs = Array.isArray(dataRaw.DLCs) ? dataRaw.DLCs : []
-    const mods = Array.isArray(dataRaw.mods) ? dataRaw.mods : []
+        return href && authorTitle ? {
+            id: authorIdConvert(href),
+            title: authorTitle,
+        } : null
+    }).filter((value): value is NonNullable<typeof value> => value !== null)
+    const collections = $('div.parentCollections > div.parentCollection').toArray().map((element) => {
+        const item = $(element)
+        const onclick = textOrNull(item.attr('onclick'))
+        const titleValue = textOrNull(item.find('.parentCollectionTitle').text())
+
+        return onclick && titleValue ? {
+            id: idFromHref(onclick),
+            title: titleValue,
+        } : null
+    }).filter((value): value is NonNullable<typeof value> => value !== null)
+    const dlcs = $('.requiredDLCContainer > .requiredDLCItem > a').toArray().map((element) => {
+        const href = textOrNull($(element).attr('href'))
+
+        return href ? {id: dlcsConvert(href)} : null
+    }).filter((value): value is NonNullable<typeof value> => value !== null)
+    const mods = $('#RequiredItems > a').toArray().map((element) => {
+        const item = $(element)
+        const href = textOrNull(item.attr('href'))
+        const titleValue = textOrNull(item.find('.requiredItem').text())
+
+        return href && titleValue ? {
+            id: idFromHref(href),
+            title: titleValue,
+        } : null
+    }).filter((value): value is NonNullable<typeof value> => value !== null)
+    const dataRaw: Partial<IScrapeSteamData> = {
+        title: textOrNull($('.workshopItemTitle').first().text()) || undefined,
+        authors,
+        ratingStars: ratingStarsConvert(textOrNull($('.ratingSection img').first().attr('src')) || ''),
+        ratingCount: ratingCountConvert(textOrNull($('.ratingSection .numRatings').first().text()) || ''),
+        commentCount: (() => {
+            const value = textOrNull($('a.sectionTab.comments .tabCount').first().text())
+            return value !== null ? commaNumber(value) : undefined
+        })(),
+        _thumbName: thumbIdConvert(textOrNull($('#previewImageMain,#previewImage').first().attr('src')) || 'default_image'),
+        sizeMB: (() => {
+            const value = detailsStatRight[0]
+            return value ? suffixConvert(value) : undefined
+        })(),
+        postedDate: (() => {
+            const value = detailsStatRight[1]
+            return value ? dateConvert(value) || undefined : undefined
+        })(),
+        updatedDate: (() => {
+            const value = detailsStatRight[2]
+            return value ? dateConvert(value) || undefined : undefined
+        })(),
+        revision: (() => {
+            const value = textOrNull($('.detailsStatNumChangeNotes').first().text())
+            return value ? suffixConvert(value) : undefined
+        })(),
+        mods,
+        DLCs: dlcs,
+        collections,
+        visitorCount: (() => {
+            const value = statsRows[0] && statsRows[0][0]
+            return value ? commaNumber(value) : undefined
+        })(),
+        subscriberCount: (() => {
+            const value = statsRows[1] && statsRows[1][0]
+            return value ? commaNumber(value) : undefined
+        })(),
+        favoriteCount: (() => {
+            const value = statsRows[2] && statsRows[2][0]
+            return value ? commaNumber(value) : undefined
+        })(),
+        description: $('.workshopItemDescription').first().html() || undefined,
+    }
+
     const detailStatDates = parseDetailStatDatesFromHtml(html)
     const title = typeof dataRaw.title === 'string' ? dataRaw.title : parseTitleFromHtml(html)
     const description = typeof dataRaw.description === 'string' ? dataRaw.description : ''

@@ -137,7 +137,6 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
 
     // Check that data actually is there.
     ;([
-        'description',
         'title',
     ] as Array<keyof PickByValueExact<IScrapeSteamData, string>>).forEach((prop) => {
         if(typeof dataRaw[prop] !== 'string') throw new Error(`Field ${prop} failed to scrape.`)
@@ -165,7 +164,7 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
     const dlcs = Array.isArray(dataRaw.DLCs) ? dataRaw.DLCs : []
     const mods = Array.isArray(dataRaw.mods) ? dataRaw.mods : []
     const title = dataRaw.title as string
-    const description = dataRaw.description as string
+    const description = typeof dataRaw.description === 'string' ? dataRaw.description : ''
     const commentCount = dataRaw.commentCount as number
     const favoriteCount = dataRaw.favoriteCount as number
     const revision = dataRaw.revision as number

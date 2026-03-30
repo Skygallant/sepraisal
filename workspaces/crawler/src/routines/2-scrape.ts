@@ -1,8 +1,9 @@
 import { DB_NAME, DB_URL, IBlueprint, idFromHref, timeout, toMinSec, VENDOR_MOD, Work, Worker } from '@sepraisal/common'
-import { writeFileSync } from 'fs'
+import { existsSync, mkdirSync, writeFileSync } from 'fs'
 import moment from 'moment'
 import { Collection, MongoClient } from 'mongodb'
 import pad from 'pad'
+import { join } from 'path'
 import { Omit, PickByValueExact } from 'utility-types'
 
 import { QUERIES } from '../queries'
@@ -106,6 +107,17 @@ const parseDetailStatDatesFromHtml = (html: string): Date[] =>
         .map((value) => dateConvert(value))
         .filter((value): value is Date => value instanceof Date)
 
+const SCRAPE_DEBUG_ENABLED = /^(1|true|yes)$/i.test(process.env.crawler_debug_scrape || '')
+
+const writeScrapeDebugDump = (id: number, payload: unknown): void => {
+    if(!SCRAPE_DEBUG_ENABLED) return
+
+    const debugDir = join(process.cwd(), 'debug', 'scrape')
+    if(!existsSync(debugDir)) mkdirSync(debugDir, {recursive: true})
+    const debugPath = join(debugDir, `${id}.json`)
+    writeFileSync(debugPath, JSON.stringify(payload, null, 2), 'utf8')
+}
+
 const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
     const url = `https://steamcommunity.com/sharedfiles/filedetails/?id=${id}`
     const html = await steamFetchHtml(url)
@@ -168,7 +180,6 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
     const mods = Array.isArray(dataRaw.mods) ? dataRaw.mods : []
     const detailStatDates = parseDetailStatDatesFromHtml(html)
     const title = typeof dataRaw.title === 'string' ? dataRaw.title : parseTitleFromHtml(html)
-    if(typeof title !== 'string' || title === '') throw new Error('Field title failed to scrape.')
     const description = typeof dataRaw.description === 'string' ? dataRaw.description : ''
     const commentCount = typeof dataRaw.commentCount === 'number' ? dataRaw.commentCount : 0
     const favoriteCount = typeof dataRaw.favoriteCount === 'number' ? dataRaw.favoriteCount : 0
@@ -177,11 +188,68 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
     const subscriberCount = typeof dataRaw.subscriberCount === 'number' ? dataRaw.subscriberCount : 0
     const visitorCount = typeof dataRaw.visitorCount === 'number' ? dataRaw.visitorCount : 0
     const postedDate = dataRaw.postedDate instanceof Date ? dataRaw.postedDate : detailStatDates[0]
-    if(!(postedDate instanceof Date)) throw new Error('Field postedDate failed to scrape.')
     const updatedDate = dataRaw.updatedDate instanceof Date ? dataRaw.updatedDate : detailStatDates[1] || postedDate
     const thumbName = typeof dataRaw._thumbName === 'string' || dataRaw._thumbName === null ? dataRaw._thumbName : null
     const ratingStars = typeof dataRaw.ratingStars === 'number' ? dataRaw.ratingStars : null
     const storedRatingCount = typeof dataRaw.ratingCount === 'number' ? dataRaw.ratingCount : null
+    const defaultedFields = [
+        ...(Array.isArray(dataRaw.authors) ? [] : ['authors']),
+        ...(Array.isArray(dataRaw.collections) ? [] : ['collections']),
+        ...(Array.isArray(dataRaw.DLCs) ? [] : ['DLCs']),
+        ...(Array.isArray(dataRaw.mods) ? [] : ['mods']),
+        ...(typeof dataRaw.title === 'string' ? [] : title ? ['title'] : []),
+        ...(typeof dataRaw.description === 'string' ? [] : ['description']),
+        ...(typeof dataRaw.commentCount === 'number' ? [] : ['commentCount']),
+        ...(typeof dataRaw.favoriteCount === 'number' ? [] : ['favoriteCount']),
+        ...(typeof dataRaw.revision === 'number' ? [] : ['revision']),
+        ...(typeof dataRaw.sizeMB === 'number' ? [] : ['sizeMB']),
+        ...(typeof dataRaw.subscriberCount === 'number' ? [] : ['subscriberCount']),
+        ...(typeof dataRaw.visitorCount === 'number' ? [] : ['visitorCount']),
+        ...(dataRaw.postedDate instanceof Date ? [] : postedDate instanceof Date ? ['postedDate'] : []),
+        ...(dataRaw.updatedDate instanceof Date ? [] : updatedDate instanceof Date ? ['updatedDate'] : []),
+        ...((typeof dataRaw._thumbName === 'string' || dataRaw._thumbName === null) ? [] : ['_thumbName']),
+        ...(typeof dataRaw.ratingStars === 'number' || dataRaw.ratingStars === null ? [] : ['ratingStars']),
+        ...(typeof dataRaw.ratingCount === 'number' || dataRaw.ratingCount === null ? [] : ['ratingCount']),
+    ]
+    const requiredFailures = [
+        ...((typeof title === 'string' && title !== '') ? [] : ['title']),
+        ...(postedDate instanceof Date ? [] : ['postedDate']),
+    ]
+
+    writeScrapeDebugDump(id, {
+        id,
+        url,
+        parsed: dataRaw,
+        derived: {
+            titleFromHtml: parseTitleFromHtml(html),
+            detailStatDates,
+        },
+        normalized: {
+            id,
+            title,
+            authors,
+            description,
+            _thumbName: thumbName,
+            postedDate,
+            updatedDate,
+            sizeMB,
+            revision,
+            mods,
+            DLCs: dlcs.map(({id: dlcId}: any) => dlcId),
+            collections,
+            ratingStars,
+            ratingCount: storedRatingCount,
+            commentCount,
+            visitorCount,
+            subscriberCount,
+            favoriteCount,
+        },
+        defaultedFields,
+        requiredFailures,
+    })
+
+    if(typeof title !== 'string' || title === '') throw new Error('Field title failed to scrape.')
+    if(!(postedDate instanceof Date)) throw new Error('Field postedDate failed to scrape.')
 
 
     const ratingCount = storedRatingCount !== null ? storedRatingCount : 0

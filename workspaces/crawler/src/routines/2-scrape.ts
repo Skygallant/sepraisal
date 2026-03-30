@@ -225,35 +225,42 @@ const removeRemoved = async (collection: Collection<IBlueprint>, doc: IProjectio
     })
     if(html === '') return true
 
-    const data = scrapeHtml<{adultGate: boolean, removed: boolean, breadcumb: string}>(html, {
+    const data = scrapeHtml<{
+        adultGate?: boolean,
+        removed?: boolean,
+        breadcumb?: string,
+    }>(html, {
         adultGate: {selector: '.adult_content_age_gate', attr: 'class', convert: (str) => str === 'adult_content_age_gate'},
         breadcumb: {selector: '.breadcrumbs > a:nth-child(1)'},
         removed: {selector: '#message > h3', convert: (str) => str.includes('There was a problem accessing the item.')},
     })
+    const breadcumb = typeof data.breadcumb === 'string' ? data.breadcumb : ''
+    const removed = data.removed === true
+    const adultGate = data.adultGate === true
 
-    switch(data.breadcumb) {
+    switch(breadcumb) {
         case('Space Engineers'): {
             return false  // not to remove.
         }
         case(''): {
-            if(data.removed) {
+            if(removed) {
                 try {
                     await collection.deleteOne({_id: doc._id})
                     console.info(`${prefix}removed from workshop, deleted.`)
                 } catch(err) {
                     console.warn(`${prefix}removed from workshop, but failed to delete.`)
                 }
-            } else if (data.adultGate) {
+            } else if (adultGate) {
                 console.warn(`${prefix}has adult game, since when SE has that?`)
             } else {
-                console.warn(`${prefix}Suspicious:`, data)
+                console.warn(`${prefix}Suspicious fallback page.`)
             }
 
             return true
         }
         default: {
             await collection.deleteOne({_id: doc._id})
-            console.warn(`${prefix}Cleanup from "${data.breadcumb}".. how did it get here?`)
+            console.warn(`${prefix}Cleanup from "${breadcumb}".. how did it get here?`)
 
             return true
         }

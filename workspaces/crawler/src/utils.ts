@@ -47,6 +47,51 @@ const steamProxyFlags = STEAM_HTTPS_PROXY
     ? ` --proxy ${shellEscape(normalizeProxy(STEAM_HTTPS_PROXY))}`
     : ''
 let steamLoginPromise: Promise<void> | null = null
+let steamWebQueue: Promise<void> = Promise.resolve()
+const sleepMs = async (ms: number): Promise<void> =>
+    new Promise<void>((resolve) => setTimeout(resolve, ms))
+const STEAM_WEB_REQUEST_DELAY_MS = 5000
+
+const isSteamRetryableError = (err: Error): boolean => {
+    const message = String(err.message)
+
+    return message.includes('curl: (28)')
+        || (message.includes('curl: (22)') && message.includes(' 429'))
+}
+
+const withSteamRetry = async <T>(fn: () => Promise<T>): Promise<T> => {
+    const maxAttempts = 3
+
+    for(let attempt = 1; attempt <= maxAttempts; attempt++) {
+        try {
+            return await fn()
+        } catch(err) {
+            if(!(err instanceof Error) || !isSteamRetryableError(err) || attempt === maxAttempts) throw err
+            await sleepMs(attempt * 5000)
+        }
+    }
+
+    throw new Error('Unreachable retry state.')
+}
+
+const throttleSteamWebRequest = async <T>(fn: () => Promise<T>): Promise<T> => {
+    const previous = steamWebQueue
+    let releaseQueue = (): void => {/* */}
+    steamWebQueue = new Promise<void>((resolve) => {
+        releaseQueue = resolve
+    })
+
+    await previous
+
+    try {
+        const result = await withSteamRetry(fn)
+        await sleepMs(STEAM_WEB_REQUEST_DELAY_MS)
+
+        return result
+    } finally {
+        releaseQueue()
+    }
+}
 
 export const asCrawlerUser = (cmd: string): string => {
     const whoami = execSync(`whoami`).toString().trim()
@@ -73,7 +118,7 @@ export const isSteamAccessDenied = (html: string): boolean =>
 export const steamFetchHtml = async (url: string): Promise<string> => {
     await ensureSteamCmdLogin()
 
-    const html = await execAsync([
+    const html = await throttleSteamWebRequest(() => execAsync([
         'curl -fsSL --compressed',
         STEAM_CURL_FLAGS,
         `-A ${shellEscape(STEAM_WEB_USER_AGENT)}`,
@@ -82,7 +127,7 @@ export const steamFetchHtml = async (url: string): Promise<string> => {
         steamCookieFlags,
         steamProxyFlags,
         shellEscape(url),
-    ].join(' '))
+    ].join(' ')))
 
     if(isSteamAccessDenied(html)) {
         throw new Error(`Steam access denied for ${url}`)
@@ -94,7 +139,7 @@ export const steamFetchHtml = async (url: string): Promise<string> => {
 export const steamDownloadFile = async (url: string, destination: string): Promise<void> => {
     await ensureSteamCmdLogin()
 
-    await execAsync([
+    await throttleSteamWebRequest(() => execAsync([
         'curl -fsSL --compressed',
         STEAM_CURL_FLAGS,
         `-A ${shellEscape(STEAM_WEB_USER_AGENT)}`,
@@ -104,7 +149,7 @@ export const steamDownloadFile = async (url: string, destination: string): Promi
         steamProxyFlags,
         `-o ${shellEscape(destination)}`,
         shellEscape(url),
-    ].join(' '))
+    ].join(' ')))
 }
 
 export const scrapeHtml = <T>(html: string, opts: unknown): T =>

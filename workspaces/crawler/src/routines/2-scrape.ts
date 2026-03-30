@@ -100,7 +100,7 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
         | 'modsCount'
     type IScrapeSteamData = Omit<IFlagParam, IScrapeSteamDataOmits>
 
-    const dataRaw = scrapeHtml<IScrapeSteamData>(html, {
+    const parsed = scrapeHtml<Partial<IScrapeSteamData> | undefined>(html, {
         id: {selector: 'a.sectionTab:nth-child(1)', attr: 'href', convert: idFromHref},
         title: {selector: '.workshopItemTitle'},
         authors: {listItem: 'div.creatorsBlock > div.friendBlock', data: {
@@ -131,6 +131,9 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
         favoriteCount: {selector: '.stats_table tr:nth-child(3) > td:nth-child(1)', convert: commaNumber},
         description: {selector: '.workshopItemDescription', how: 'html'},
     } as Record<keyof IScrapeSteamData, unknown>)
+    const dataRaw = parsed && typeof parsed === 'object'
+        ? parsed
+        : {} as Partial<IScrapeSteamData>
 
     // Check that data actually is there.
     ;([
@@ -157,6 +160,11 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
         if(!(dataRaw[prop] instanceof Date)) throw new Error(`Field ${prop} failed to scrape.`)
     })
 
+    const authors = Array.isArray(dataRaw.authors) ? dataRaw.authors : []
+    const collections = Array.isArray(dataRaw.collections) ? dataRaw.collections : []
+    const dlcs = Array.isArray(dataRaw.DLCs) ? dataRaw.DLCs : []
+    const mods = Array.isArray(dataRaw.mods) ? dataRaw.mods : []
+
 
     const ratingCount = (dataRaw.ratingCount !== null ? dataRaw.ratingCount : 0)
     const exposureMax = Math.max(dataRaw.visitorCount, dataRaw.subscriberCount)
@@ -164,15 +172,15 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
     const activityMax = Math.max(ratingCount, dataRaw.commentCount, dataRaw.favoriteCount)
     const activityTotal = ratingCount + dataRaw.commentCount + dataRaw.favoriteCount
     const popularity = dataRaw.subscriberCount / Math.sqrt(Math.min(30, moment().diff(dataRaw.postedDate, 'd')))
-    const authorsCount = dataRaw.authors.length
-    const collectionsCount = dataRaw.collections.length
-    const DLCsCount = dataRaw.DLCs.length
-    const modsCount = dataRaw.mods.length
+    const authorsCount = authors.length
+    const collectionsCount = collections.length
+    const DLCsCount = dlcs.length
+    const modsCount = mods.length
 
     const dataForFlags: IFlagParam = {
         id,
         title: dataRaw.title,
-        authors: dataRaw.authors,
+        authors,
         description: dataRaw.description,
         _thumbName: dataRaw._thumbName,
         _updated: new Date(),
@@ -180,10 +188,10 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
         updatedDate: dataRaw.updatedDate || dataRaw.postedDate,  // UpdatedDate doesn't exist if posted but not updated.
         sizeMB: dataRaw.sizeMB,
         revision: dataRaw.revision,
-        mods: dataRaw.mods,
+        mods,
         /* eslint-disable-next-line @typescript-eslint/no-explicit-any */  // Hack around enforced object due scraping.
-        DLCs: dataRaw.DLCs.map(({id}: any) => id),
-        collections: dataRaw.collections,
+        DLCs: dlcs.map(({id}: any) => id),
+        collections,
         ratingStars: dataRaw.ratingStars,
         ratingCount: dataRaw.ratingCount,
         commentCount: dataRaw.commentCount,
@@ -370,16 +378,9 @@ export const main = async (): Promise<void> => {
 
     const worker = Worker<IWorkItem>(work, errors)
 
-    await Promise.all([
-        worker(works, 0),
-        worker(works, 1),
-        worker(works, 2),
-        worker(works, 3),
-        worker(works, 4),
-        worker(works, 5),
-        worker(works, 6),
-        worker(works, 7),
-    ])
+    await Promise.all(
+        Array.from({length: SCRAPE_WORKER_COUNT}, (_, i) => worker(works, i))
+    )
 
     /* eslint-disable @typescript-eslint/no-unused-vars */
     const found = [...scraped.values()]
@@ -406,3 +407,4 @@ export const main = async (): Promise<void> => {
 
 }
 const SCRAPE_TIMEOUT_SECONDS = 30
+const SCRAPE_WORKER_COUNT = 4

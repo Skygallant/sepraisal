@@ -119,7 +119,6 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
     type IScrapeSteamData = Omit<IFlagParam, IScrapeSteamDataOmits>
 
     const parsed = scrapeHtml<Partial<IScrapeSteamData> | undefined>(html, {
-        id: {selector: 'a.sectionTab:nth-child(1)', attr: 'href', convert: idFromHref},
         title: {selector: '.workshopItemTitle'},
         authors: {listItem: 'div.creatorsBlock > div.friendBlock', data: {
             id: {selector: '.friendBlockLinkOverlay', attr: 'href', convert: authorIdConvert},
@@ -155,7 +154,6 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
 
     // Check that data actually is there.
     ;([
-        'id',
         'revision',
         'sizeMB',
     ] as Array<keyof PickByValueExact<IScrapeSteamData, number>>).forEach((prop) => {

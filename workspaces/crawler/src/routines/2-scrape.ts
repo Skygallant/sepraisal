@@ -1,4 +1,5 @@
 import { DB_NAME, DB_URL, IBlueprint, idFromHref, timeout, toMinSec, VENDOR_MOD, Work, Worker } from '@sepraisal/common'
+import { writeFileSync } from 'fs'
 import moment from 'moment'
 import { Collection, MongoClient } from 'mongodb'
 import pad from 'pad'
@@ -254,7 +255,7 @@ const removeRemoved = async (collection: Collection<IBlueprint>, doc: IProjectio
             } else if (adultGate) {
                 console.warn(`${prefix}has adult game, since when SE has that?`)
             } else {
-                console.warn(`${prefix}Suspicious fallback page.`)
+                dumpSuspiciousFallbackAndExit(doc._id, html, prefix)
             }
 
             return true
@@ -270,6 +271,18 @@ const removeRemoved = async (collection: Collection<IBlueprint>, doc: IProjectio
 }
 
 const scraped = new Map<number, [number | null, number]>()
+let suspiciousFallbackDumped = false
+
+const dumpSuspiciousFallbackAndExit = (id: number, html: string, prefix: string): never => {
+    if(!suspiciousFallbackDumped) {
+        suspiciousFallbackDumped = true
+        const debugPath = '/root/broke.html'
+        writeFileSync(debugPath, html, 'utf8')
+        console.error(`${prefix}Suspicious fallback page dumped to ${debugPath}. Exiting.`)
+    }
+
+    process.exit(1)
+}
 
 type IWorkItem = [Collection, IProjection, number]
 const work: Work<IWorkItem> = async (collection: Collection, doc: IProjection, index: number): Promise<void> => {

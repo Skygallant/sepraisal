@@ -419,5 +419,5 @@ export const main = async (): Promise<void> => {
 
 
 }
-const SCRAPE_TIMEOUT_SECONDS = 30
-const SCRAPE_WORKER_COUNT = 4
+const SCRAPE_TIMEOUT_SECONDS = 120
+const SCRAPE_WORKER_COUNT = 1

@@ -14,7 +14,14 @@ export const execAsyncBuffer = async (cmd: string): Promise<Buffer> =>
 export const lstatAsync = async (path: string): Promise<false | Stats> =>
     new Promise<false | Stats>((res) => lstat(path, (err, stats) => res(err instanceof Error ? false : stats)))
 
-const {crawler_user, crawler_steam_dir, crawler_downloads_dir, crawler_steam_cookie_file, steam_username} = process.env
+const {
+    crawler_user,
+    crawler_steam_dir,
+    crawler_downloads_dir,
+    crawler_steam_cookie_file,
+    crawler_https_proxy,
+    steam_username,
+} = process.env
 if(crawler_user === undefined
     || crawler_steam_dir === undefined
     || crawler_downloads_dir === undefined
@@ -26,12 +33,18 @@ if(crawler_user === undefined
 export const STEAM_USERNAME = steam_username
 export const STEAM_DIR = crawler_steam_dir
 export const STEAM_COOKIE_FILE = crawler_steam_cookie_file
+export const STEAM_HTTPS_PROXY = crawler_https_proxy
 
 const shellEscape = (input: string): string => `'${input.replace(/'/g, `'\\''`)}'`
 const STEAM_WEB_USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36'
 const STEAM_CURL_FLAGS = '--connect-timeout 10 --max-time 20'
+const normalizeProxy = (proxy: string): string =>
+    proxy.includes('://') ? proxy : `http://${proxy}`
 const steamCookieFlags = STEAM_COOKIE_FILE
     ? ` -b ${shellEscape(STEAM_COOKIE_FILE)} -c ${shellEscape(STEAM_COOKIE_FILE)}`
+    : ''
+const steamProxyFlags = STEAM_HTTPS_PROXY
+    ? ` --proxy ${shellEscape(normalizeProxy(STEAM_HTTPS_PROXY))}`
     : ''
 let steamLoginPromise: Promise<void> | null = null
 
@@ -67,6 +80,7 @@ export const steamFetchHtml = async (url: string): Promise<string> => {
         '-H "Accept-Language: en-US,en;q=0.9"',
         '-H "Cache-Control: no-cache"',
         steamCookieFlags,
+        steamProxyFlags,
         shellEscape(url),
     ].join(' '))
 
@@ -87,6 +101,7 @@ export const steamDownloadFile = async (url: string, destination: string): Promi
         '-H "Accept-Language: en-US,en;q=0.9"',
         '-H "Cache-Control: no-cache"',
         steamCookieFlags,
+        steamProxyFlags,
         `-o ${shellEscape(destination)}`,
         shellEscape(url),
     ].join(' '))

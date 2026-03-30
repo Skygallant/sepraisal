@@ -5,7 +5,7 @@ import pad from 'pad'
 import { Omit, PickByValueExact } from 'utility-types'
 
 import { QUERIES } from '../queries'
-import { prepareQuery, scrapeHtml, steamFetchHtml } from '../utils'
+import { ensureSteamCmdLogin, prepareQuery, scrapeHtml, steamFetchHtml } from '../utils'
 
 
 type IFlagParam = Omit<IBlueprint.ISteam, 'flagsRed' | 'flagsYellow' | 'flagsGreen'>
@@ -269,10 +269,10 @@ const work: Work<IWorkItem> = async (collection: Collection, doc: IProjection, i
 
     let steam: IBlueprint.ISteam
     try {
-        steam = await timeout(9, scrape(doc._id))
+        steam = await timeout(SCRAPE_TIMEOUT_SECONDS, scrape(doc._id))
     } catch(err) {
         try {
-            if(!await timeout(9, removeRemoved(collection, doc, prefix))) console.error(`${prefix}legit error: ${err instanceof Error ? err.message : err}`)
+            if(!await timeout(SCRAPE_TIMEOUT_SECONDS, removeRemoved(collection, doc, prefix))) console.error(`${prefix}legit error: ${err instanceof Error ? err.message : err}`)
         } catch(err2) {
             console.error(`${prefix}Failed to scrape: ${err2 instanceof Error ? err2.message : err2}`)
         }
@@ -301,6 +301,7 @@ export const main = async (): Promise<void> => {
 
 
     const timer = Date.now()
+    await ensureSteamCmdLogin()
     const client = await MongoClient.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
     console.info('Successfully connected to server.')
     const db = client.db(DB_NAME)
@@ -373,3 +374,4 @@ export const main = async (): Promise<void> => {
 
 
 }
+const SCRAPE_TIMEOUT_SECONDS = 30

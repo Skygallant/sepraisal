@@ -3,7 +3,7 @@ import { Collection, MongoClient } from 'mongodb'
 import pad from 'pad'
 
 import { QUERIES } from '../queries'
-import { execAsync, execAsyncBuffer, lstatAsync, mkdirpSync, prepareQuery, steamDownloadFile, thumbLink, thumbPath } from '../utils'
+import { ensureSteamCmdLogin, execAsync, execAsyncBuffer, lstatAsync, mkdirpSync, prepareQuery, steamDownloadFile, thumbLink, thumbPath } from '../utils'
 
 
 const QUALITY = 10000  // In bytes. 3000 is the lowest that doesn't make eyes bleed.
@@ -92,6 +92,7 @@ const work: Work<IWorkItem> = async (collection: Collection, doc: IProjection, i
 export const main = async (): Promise<void> => {
 
 
+    await ensureSteamCmdLogin()
     const client = await MongoClient.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
     console.info('Successfully connected to server.')
     const db = client.db(DB_NAME)

@@ -29,6 +29,7 @@ export const STEAM_COOKIE_FILE = crawler_steam_cookie_file
 
 const shellEscape = (input: string): string => `'${input.replace(/'/g, `'\\''`)}'`
 const STEAM_WEB_USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36'
+const STEAM_CURL_FLAGS = '--connect-timeout 10 --max-time 20'
 const steamCookieFlags = STEAM_COOKIE_FILE
     ? ` -b ${shellEscape(STEAM_COOKIE_FILE)} -c ${shellEscape(STEAM_COOKIE_FILE)}`
     : ''
@@ -61,6 +62,7 @@ export const steamFetchHtml = async (url: string): Promise<string> => {
 
     const html = await execAsync([
         'curl -fsSL --compressed',
+        STEAM_CURL_FLAGS,
         `-A ${shellEscape(STEAM_WEB_USER_AGENT)}`,
         '-H "Accept-Language: en-US,en;q=0.9"',
         '-H "Cache-Control: no-cache"',
@@ -80,6 +82,7 @@ export const steamDownloadFile = async (url: string, destination: string): Promi
 
     await execAsync([
         'curl -fsSL --compressed',
+        STEAM_CURL_FLAGS,
         `-A ${shellEscape(STEAM_WEB_USER_AGENT)}`,
         '-H "Accept-Language: en-US,en;q=0.9"',
         '-H "Cache-Control: no-cache"',

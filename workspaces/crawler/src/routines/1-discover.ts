@@ -2,7 +2,7 @@ import { DB_NAME, DB_URL, IBlueprint, idFromHref, toMinSec, Work, Worker } from 
 import { Collection, MongoClient } from 'mongodb'
 import pad from 'pad'
 
-import { scrapeHtml, steamFetchHtml } from '../utils'
+import { ensureSteamCmdLogin, scrapeHtml, steamFetchHtml } from '../utils'
 
 /**
 * For first run, use `TYPE = 'totaluniquesubscribers'` and `MAX_PAGES = 1670`.
@@ -76,6 +76,7 @@ const work: Work<IWorkItem> = async (collection: Collection<{_id: number}>, inde
 export const main = async (): Promise<void> => {
 
     const timer = Date.now()
+    await ensureSteamCmdLogin()
     const client = await MongoClient.connect(DB_URL, { useNewUrlParser: true, useUnifiedTopology: true })
     console.info('Successfully connected to server.')
     const db = client.db(DB_NAME)

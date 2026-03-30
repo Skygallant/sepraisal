@@ -154,11 +154,6 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
 
     // Check that data actually is there.
     ;([
-        'sizeMB',
-    ] as Array<keyof PickByValueExact<IScrapeSteamData, number>>).forEach((prop) => {
-        if(typeof dataRaw[prop] !== 'number') throw new Error(`Field ${prop} failed to scrape.`)
-    })
-    ;([
         'postedDate',
         // 'updatedDate',  // OK to be null, then defaults to postedDate.
     ] as Array<keyof PickByValueExact<IScrapeSteamData, Date>>).forEach((prop) => {
@@ -175,7 +170,7 @@ const scrape = async (id: number): Promise<IBlueprint.ISteam> => {
     const commentCount = typeof dataRaw.commentCount === 'number' ? dataRaw.commentCount : 0
     const favoriteCount = typeof dataRaw.favoriteCount === 'number' ? dataRaw.favoriteCount : 0
     const revision = typeof dataRaw.revision === 'number' ? dataRaw.revision : 1
-    const sizeMB = dataRaw.sizeMB as number
+    const sizeMB = typeof dataRaw.sizeMB === 'number' ? dataRaw.sizeMB : 0
     const subscriberCount = typeof dataRaw.subscriberCount === 'number' ? dataRaw.subscriberCount : 0
     const visitorCount = typeof dataRaw.visitorCount === 'number' ? dataRaw.visitorCount : 0
     const postedDate = dataRaw.postedDate as Date
